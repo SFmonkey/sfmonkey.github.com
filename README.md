@@ -1,2 +1,2 @@
-# sfmonkey.github.com
+# sfmonkey.github.io
 github pages
