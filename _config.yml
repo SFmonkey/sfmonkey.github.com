@@ -1,1 +1,2 @@
 permalink: /blog/:year/:month/:title.html
+baseurl: /sfmonkey.github.io
