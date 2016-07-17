@@ -1,2 +1,2 @@
-permalink: /blog/:year/:month/:title.html
-baseurl: /sfmonkey.github.io
+permalink: /:year/:month/:title.html
+baseurl: /blog
