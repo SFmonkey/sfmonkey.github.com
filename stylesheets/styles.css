@@ -294,3 +294,11 @@ footer {
     color:#444;
   }
 }
+
+#disqus_thread {
+    width:860px;
+    float: left;
+    position: fixed;
+    bottom: 50px;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
