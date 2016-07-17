@@ -1,2 +1,1 @@
-permalink: /:year/:month/:title.html
-baseurl: /blog
+permalink: /blog/:year/:month/:title.html
