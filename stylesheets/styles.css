@@ -2,21 +2,21 @@
   font-family: 'Noto Sans';
   font-weight: 100;
   font-style: normal;
-  src: url('//sfmonkey.github.io/fonts/NotoSansTC-Thin.otf');
+  src: url('//sfmonkey.github.io/fonts/NotoSansTC-Thin.otf') format ('opentype');
 }
 
 @font-face {
   font-family: 'Noto Sans';
   font-weight: 400;
   font-style: normal;
-  src: url('//sfmonkey.github.io/fonts/NotoSansTC-Regular.otf');
+  src: url('//sfmonkey.github.io/fonts/NotoSansTC-Regular.otf') format ('opentype');
 }
 
 @font-face {
   font-family: 'Noto Sans';
   font-weight: 700;
   font-style: normal;
-  src: url('//sfmonkey.github.io/fonts/NotoSansTC-Bold.otf');
+  src: url('//sfmonkey.github.io/fonts/NotoSansTC-Bold.otf') format ('opentype');
 }
 
 body {
