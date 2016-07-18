@@ -26,12 +26,13 @@
     src: url('../fonts/NotoSans-BoldItalic.ttf') format('truetype');
 }
 
-body {
-  background-color: #fff;
-  padding:50px;
-  font: 14px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color:#727272;
-  font-weight:400;
+html,body {
+    height: 100%;
+    margin: 80px auto 0;
+    background-color: #fff;
+    font: 14px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color:#727272;
+    font-weight:400;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -80,9 +81,9 @@ a:hover small {
 }
 
 .wrapper {
-  width:860px;
-  min-height: 100%;
-  margin:0 auto -326px;
+    width:860px;
+    min-height: 100%;
+    margin:0 auto -326px;
 }
 
 blockquote {
@@ -302,4 +303,8 @@ footer {
     position: fixed;
     bottom: 50px;
     -webkit-font-smoothing: subpixel-antialiased;
+}
+
+#push {
+    height: 400px;
 }
