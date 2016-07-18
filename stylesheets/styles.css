@@ -133,8 +133,6 @@ img {
 
 header {
   width:270px;
-  float:left;
-  position:fixed;
   -webkit-font-smoothing:subpixel-antialiased;
 }
 
@@ -199,8 +197,6 @@ header ul a strong {
 
 section {
   width:500px;
-  float:right;
-  padding-bottom:50px;
 }
 
 small {
@@ -299,9 +295,7 @@ footer {
 
 #disqus_thread {
     width:860px;
-    float: left;
-    position: fixed;
-    bottom: 50px;
+    margin: auto;
     -webkit-font-smoothing: subpixel-antialiased;
 }
 
