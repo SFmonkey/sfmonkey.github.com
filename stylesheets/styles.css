@@ -81,7 +81,8 @@ a:hover small {
 
 .wrapper {
   width:860px;
-  margin:0 auto;
+  min-height: 100%;
+  margin:0 auto -326px;
 }
 
 blockquote {
