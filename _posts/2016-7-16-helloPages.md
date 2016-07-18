@@ -1,7 +1,7 @@
 ---
 
 layout: default
-title: 由 Disqus 引发的负 margin 学习
+title: margin
 author: zihan05
 categories: Blog
 tag:Blog
