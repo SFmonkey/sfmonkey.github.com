@@ -1,2 +1,2 @@
 # sfmonkey.github.io :smile:
-github pages
+github pages + jekyll + markdown
