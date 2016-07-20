@@ -65,6 +65,13 @@ a {
   text-decoration:none;
 }
 
+section a {
+  display: block;
+  line-height: 200%;
+  color:#39c;
+  text-decoration:none;
+}
+
 a:hover {
   color:#069;
 }
