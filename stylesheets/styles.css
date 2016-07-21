@@ -114,13 +114,13 @@ pre {
   overflow-x: auto;
 }
 
-p .highlighter-rouge {
-  padding:2px 6px;
-  background: #f8f8f8;
-  border-radius:5px;
-  border:1px solid #e5e5e5;
-  overflow-x: auto;
-}
+/*p .highlighter-rouge {*/
+  /*padding:2px 6px;*/
+  /*background: #f8f8f8;*/
+  /*border-radius:5px;*/
+  /*border:1px solid #e5e5e5;*/
+  /*overflow-x: auto;*/
+/*}*/
 
 table {
   width:100%;
