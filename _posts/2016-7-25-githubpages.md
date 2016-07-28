@@ -43,10 +43,11 @@ tags: blog
     网上关于 jekyll 目录结构的讲解文章有很多，我就不在这里赘述了，文末会有参考资料。
     
     * Jekyll 解析流程
-            * 首先会加载_posts及文件夹下的所有文章，将其参数和文章内容组织保存在内存中，所有的文章的内容、参数都在site.posts对象（其他文件夹下的文章不会放入site.posts中）。
-            * 其次加载_layouts文件夹下的所有模板。
-            * 再次加载_includes文件夹下的所有需要被引入的内容。
-            * 最后根据每一篇需要编译的文章选择的其参数定义的模板来创建一个模板，并将当前文章的内容、参数等进行扩展后放在page对象、content对象中，然后进行模板的编译，生成html文件，并按照一定规则放在_site文件夹下。也就是说在创建一篇文章时，其实所有文章的内容都已经被读取出来了，这也为文章相互之间的关联提供了可能。
+            
+        * 首先会加载_posts及文件夹下的所有文章，将其参数和文章内容组织保存在内存中，所有的文章的内容、参数都在site.posts对象（其他文件夹下的文章不会放入site.posts中）。
+        * 其次加载_layouts文件夹下的所有模板。
+        * 再次加载_includes文件夹下的所有需要被引入的内容。
+        * 最后根据每一篇需要编译的文章选择的其参数定义的模板来创建一个模板，并将当前文章的内容、参数等进行扩展后放在page对象、content对象中，然后进行模板的编译，生成html文件，并按照一定规则放在_site文件夹下。也就是说在创建一篇文章时，其实所有文章的内容都已经被读取出来了，这也为文章相互之间的关联提供了可能。
          
         
         正是由于 jekyll 会在渲染一篇文章时将其他文章也一并加载，所以 jekyll 只适合搭建中小型博客。 
@@ -116,10 +117,11 @@ tags: blog
             *  username.github.io
     
     关于更改域名等不在这里说了，网上有很多，文末我会附上资料。
+    补充: 前天部署的时候突然出现问题，由于 Github 没有发来邮件提醒，而我的文章又只出现在 Github 上而未出现在博客上，导致我以为是时区问题造成的 future 未发布，其实不然，问题出现在了编码问题上，由于 Github 不知为何未发错误邮件，所以好久都没找到问题所在。 
     
 相关资料: 
-    [Git+GitHub+Markdown+Jekyll=Perfect Personal Blog](http://www.devtalking.com/articles/git-gitHub-markdown-jekyll/)
-    [如何搭建一个独立博客——简明Github Pages与Hexo教程](http://www.jianshu.com/p/05289a4bc8b2)
-    [史上最详细的Hexo博客搭建图文教程](https://xuanwo.org/2015/03/26/hexo-intor/)
-    [文档| Hexo](https://hexo.io/zh-cn/docs/)
+[Git+GitHub+Markdown+Jekyll=Perfect Personal Blog](http://www.devtalking.com/articles/git-gitHub-markdown-jekyll/)
+[如何搭建一个独立博客——简明Github Pages与Hexo教程](http://www.jianshu.com/p/05289a4bc8b2)
+[史上最详细的Hexo博客搭建图文教程](https://xuanwo.org/2015/03/26/hexo-intor/)
+[文档| Hexo](https://hexo.io/zh-cn/docs/)
           
