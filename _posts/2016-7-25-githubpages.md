@@ -117,7 +117,7 @@ tags: blog
     
     关于更改域名等不在这里说了，网上有很多，文末我会附上资料。
     
-    相关资料: 
+相关资料: 
     [Git+GitHub+Markdown+Jekyll=Perfect Personal Blog](http://www.devtalking.com/articles/git-gitHub-markdown-jekyll/)
     [如何搭建一个独立博客——简明Github Pages与Hexo教程](http://www.jianshu.com/p/05289a4bc8b2)
     [史上最详细的Hexo博客搭建图文教程](https://xuanwo.org/2015/03/26/hexo-intor/)
