@@ -126,5 +126,5 @@ tags: blog
 
 [史上最详细的Hexo博客搭建图文教程](https://xuanwo.org/2015/03/26/hexo-intor/)
 
-[文档|Hexo](https://hexo.io/zh-cn/docs/)
+[文档 Hexo](https://hexo.io/zh-cn/docs/)
           
