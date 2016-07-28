@@ -7,7 +7,7 @@ tags: blog
 
 # {{page.title}}
 
-截止今天为止，凡是我遇到的部署博客的问题，无论是 Jekyll 还是 Hexo 方面的，都一一有了答案，想着，写一篇博客，当做总结 。�����ܽ� ��
+截止今天为止，凡是我遇到的部署博客的问题，无论是 Jekyll 还是 Hexo 方面的，都一一有了答案，想着，写一篇博客，当做总结 。
 
 ### 部署前提
 
@@ -119,7 +119,7 @@ tags: blog
     关于更改域名等不在这里说了，网上有很多，文末我会附上资料。
     补充: 前天部署的时候突然出现问题，由于 Github 没有发来邮件提醒，而我的文章又只出现在 Github 上而未出现在博客上，导致我以为是时区问题造成的 future 未发布，其实不然，问题出现在了编码问题上，由于 Github 不知为何未发错误邮件，所以好久都没找到问题所在。 
     
-相关资料: 
+### 相关资料: 
 [Git+GitHub+Markdown+Jekyll=Perfect Personal Blog](http://www.devtalking.com/articles/git-gitHub-markdown-jekyll/)
 [如何搭建一个独立博客——简明Github Pages与Hexo教程](http://www.jianshu.com/p/05289a4bc8b2)
 [史上最详细的Hexo博客搭建图文教程](https://xuanwo.org/2015/03/26/hexo-intor/)
