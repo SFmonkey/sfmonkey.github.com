@@ -1,5 +1,12 @@
+markdown: rdiscount
+highlighter: pygments
 permalink: /blog/:year/:month/:title.html
 encoding: UTF-8
+name: "sifu directory"
+
+author: "zihan05"
+atom-baseurl: "https://sfmonkey.github.io"
+disqus: "gopherwood"
 
 navigations:
   - title: Archive
