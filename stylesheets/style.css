@@ -125,7 +125,8 @@ header {
     #content {
       width: 750px; } }
   #content .main-listing {
-    margin-bottom: 2em; }
+    margin-bottom: 2em; 
+    list-style-type: none;}
 
 ul.listing {
   margin-top: 1em; }
