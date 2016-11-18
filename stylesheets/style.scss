@@ -162,3 +162,24 @@ footer {
   .like-button:hover { color: #dd1144; }
   .like-button.liked:hover { color: #999; }
 }
+//table
+table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    border-spacing: 0;
+    th {
+    font-weight: bold;
+  }
+    th,td {
+    padding: 6px 13px;
+    border: 1px solid #ddd;
+  }
+    tr {
+     background-color:#fff; 
+     border-top:1px solid #ccc 
+  }
+    tr:nth-child(2n) {
+    background-color: #f8f8f8
+  }
+}
