@@ -16,8 +16,11 @@ tags: blog
 
 > Use the Chrome DevTools Timeline panel to record and analyze all the activity in your application as it runs. It's the best place to start investigating perceived performance issues in your application
 
+![](http://121.42.215.169/blog_images/timeline-10.png)
 
 Timeline 仪表盘包括四个窗口：
+
+![](http://121.42.215.169/blog_images/timeline-annotated.png)
 
 * Controls：开始记录，停止记录，配置在记录中需要捕获的信息。
 * Overview：性能总结分析页面。
@@ -27,6 +30,8 @@ Timeline 仪表盘包括四个窗口：
 Overview 窗口 
 
 Overview 窗口包含三个曲线图：
+
+![](http://121.42.215.169/blog_images/overview-annotated.jpg)
 
 * FPS：Frames Per Second ，绿色的线条越高，FPS 越高。在 FPS 曲线上面的红色块表示长帧，即 FPS 低于 30。
 * CPU：CPU 资源，这个窗口显示各种类型事件所消耗的 CPU 资源。
@@ -41,6 +46,8 @@ Overview 窗口包含三个曲线图：
 * 混杂资源是灰色。
 
 Flame Chart 窗口
+
+![](http://121.42.215.169/blog_images/timeline-show.png)
 
 * Interactions ： 在 recording 过程中发生的交互操作，比如 MouseDown。
 * Main：记录主线程
@@ -86,11 +93,15 @@ Garbage collected languages usually show a pattern of oscillating memory use. Th
 
 从下面的线性图中我们可以清晰的看出内存在不断的增加，这会导致页面最终崩溃。
 
+![](http://121.42.215.169/blog_images/timeline-node.png)
+
 可以看出，Nodes 和 JS Heap 都在不断上升，中间下降的那段是因为 js 的垃圾回收机制起的作用，但很明显，内存还是在周期性的泄露，这是一个危险的标志。那么我们如何来找到和解决这个问题呢？
 
 ## Profiles (版本 54.0.2840.71)
 
 > Use the Profiles panel if you need more information than the Timeline provide, for instance to track down memory leaks.
+
+![](http://121.42.215.169/blog_images/take-heap-snapshot.png)
 
 在 Profiles 面板上有四个配置类型：
 
@@ -132,13 +143,13 @@ Garbage collected languages usually show a pattern of oscillating memory use. Th
 
 Record JavaScript CPU Profile:
 
-[]()
+![](http://121.42.215.169/blog_images/profile-cpu.png)
 
 这个面板的功能比较简单，从上图可以看到点击按钮执行的各个函数执行的时间，顺序，包含关系和CUP变化等
 
 Take Heap Snapshot:
 
-[]()
+![](http://121.42.215.169/blog_images/profile-snapshot.png)
 
 这里解释几个名词：
 
@@ -150,23 +161,24 @@ Take Heap Snapshot:
 
 关于GC根的解释有点麻烦：它指的是一个对象指针最开始指向的内存。可以用一张图来理解：
 
-[]()
+![](http://121.42.215.169/blog_images/progile-gc.jpg)
 
 构成这张关系网的元素有两种：
 Nodes：节点，对应一个对象，用创建该对象的构造方法来命名
 Edges：连接线，对应着对象间的引用关系，用对象属性名来命名
 根据上面的定义解释，图中的对象 6 到CG根的距离就是 3 。
 
+![](http://121.42.215.169/blog_images/profile-comparison.png)
 
 可以看到有两个ClassA对象，这与我们的本意不相符，我们释放了a，应该只存在一个ClassA对象b才对。
 
 当 b.func = null 时
 
-[]()
+![](http://121.42.215.169/blog_images/profile-snapshot-extra.png)
 
 从上面两个图可以看出这两个对象中，一个是 b，另一个并不是 a，因为 a 这个引用已经置空了。第二个 ClassA 对象是bind里的闭包的上下文 self，self 与 a 引用同一个对象。虽然 a 释放了，但由于 b 没有释放，或者 b.func 没有释放，使得闭包里的 self 也一直存在。要释放 self，可以执行 b=null 或者 b.func=null
 
-[]()
+![](http://121.42.215.169/blog_images/profile-snapshot-2.png)
 
 这里需要对 shallow size 和 retained size 做一下解释：
 
@@ -185,8 +197,6 @@ Edges：连接线，对应着对象间的引用关系，用对象属性名来命
 
 顺带提一句，Retainers 视图显示出了该对象被哪些对象引用了
 
-[]()
-
 Record Allocation Timeline:
 
 关于这个面板，我们使用以下代码来进行演示：
@@ -201,21 +211,18 @@ function grow() {
 document.getElementById('grow').addEventListener('click', grow);
 ```
 
-[]()
+![](http://121.42.215.169/blog_images/new-allocations.png)
 
 每一个蓝条的出现都预示着内存泄露的可能，选择其中一个蓝条进行分析
 
-[]()
+![](http://121.42.215.169/blog_images/zoomed-allocation-timeline.png)
 
 
 
 Record Allocation Profile:
 
-[]()
+![](http://121.42.215.169/blog_images/allocation-profile.png)
 
+![](http://121.42.215.169/blog_images/object-details.png)
 
 > 性能分析很重要，前端的前辈们在很长一段时间里处于黑暗的年代中。现在已经初现光明，所以我们是很幸运的。
-
-
-
-
