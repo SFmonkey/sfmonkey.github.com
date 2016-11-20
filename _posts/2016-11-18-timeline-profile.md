@@ -1,4 +1,4 @@
-﻿---
+---
 layout: post
 title: 利用 Chrome DevTools 进行网页性能分析
 category: blog
@@ -130,13 +130,13 @@ Garbage collected languages usually show a pattern of oscillating memory use. Th
 </html>
 ```
 
-Record JavaScript CPU Profile
+Record JavaScript CPU Profile:
 
 []()
 
 这个面板的功能比较简单，从上图可以看到点击按钮执行的各个函数执行的时间，顺序，包含关系和CUP变化等
 
-Take Heap Snapshot
+Take Heap Snapshot:
 
 []()
 
@@ -187,7 +187,7 @@ Edges：连接线，对应着对象间的引用关系，用对象属性名来命
 
 []()
 
-Record Allocation Timeline
+Record Allocation Timeline:
 
 关于这个面板，我们使用以下代码来进行演示：
 
@@ -209,7 +209,7 @@ document.getElementById('grow').addEventListener('click', grow);
 
 
 
-Record Allocation Profile
+Record Allocation Profile:
 
 []()
 
