@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>实现 symbol Polyfill | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">实现 symbol Polyfill</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2019-05-07</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://sfmonkey.github.io//tag/blog">
+                    blog
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <pre><code class="language-javascript">		(function() {
+        var root = this;
+
+        var generateName = (function () {
+            var prefix = 0;
+
+            return function(descriptionStr){
+                prefix ++;
+                return '@@' + descriptionStr + '_' + prefix;
+            }
+        })()
+
+        var symbolPoyfill = function (description) {
+            if (root instanceof symbolPoyfill) throw new TypeError('symbol is not a constructor');
+
+            var descriptionStr = description == undefined ? undefined : String(description);
+
+            var symbol = Object.create({
+                toString: function() {
+                    return this.__Description__;
+                },
+                valueOf: function() {
+                    return this;
+                }
+            });
+
+            Object.defineProperties(symbol, {
+                '__Description__' : {
+                    value: generateName(descriptionStr),
+                    waritable: false,
+                    enumerable: false,
+                    configurable: false,
+                }
+            });
+
+            return symbol;
+        }
+
+        var forMap = {};
+
+        Object.defineProperties(symbolPoyfill, {
+            'for': {
+                value: function(key) {
+                    forMap[key] ? forMap[key] : forMap[descString] = symbolPoyfill(key)
+                },
+                waritable: true,
+                enumerable: false,
+                configurable: true
+            },
+            'keyFor': {
+                value: function(symbol) {
+                    for (var key in forMap) {
+                        if (forMap[key] === symbol) return key;
+                    }
+                },
+                waritable: true,
+                enumerable: false,
+                configurable: true
+            }
+        });
+
+					root.SymbolPolyfill = symbolPoyfill;
+			}
+		)()
+</code></pre>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-4-9-dom">
+              <h3 class="post-title">
+                下一篇：window document html 与 body
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
