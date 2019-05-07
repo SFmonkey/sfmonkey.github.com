@@ -1,98 +1,77 @@
-
-<!DOCTYPE html>
 <html>
   <head>
-    
-<meta charset="utf-8" >
-
-<title>前端工程师在移动端开发中遇到的像素问题 | Hve Notes</title>
-<meta name="description" content="温故而知新">
-
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>前端工程师在移动端开发中遇到的像素问题 | 四辅的博客</title>
 <link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
 <link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
 
 
   </head>
   <body>
-    <div id="app" class="main">
-      <div class="site-header-container">
-  <div class="site-header">
-    <div class="left">
-      <a href="https://sfmonkey.github.io/">
-        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
-      </a>
-      <a href="https://sfmonkey.github.io/">
-        <h1 class="site-title">Hve Notes</h1>
-      </a>
-    </div>
-    <div class="right">
-      <transition name="fade">
-        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
-      </transition>
-    </div>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    四辅的博客
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
   </div>
 </div>
 
-<transition name="fade">
-  <div class="menu-container" style="display: none;" v-show="menuVisible">
-    <div class="menu-list">
       
-        
-          <a href="/" class="menu purple-link">
-            首页
-          </a>
-        
-      
-        
-          <a href="/archives" class="menu purple-link">
-            归档
-          </a>
-        
-      
-        
-          <a href="/tags" class="menu purple-link">
-            标签
-          </a>
-        
-      
-        
-          <a href="/post/about" class="menu purple-link">
-            关于
-          </a>
-        
-      
-    </div>
-  </div>
-</transition>
-
-
-      <div class="content-container">
         <div class="post-detail">
-          <h2 class="post-title">前端工程师在移动端开发中遇到的像素问题</h2>
-          <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> Invalid date</span>
-            
-              <span>
-                <i class="icon-pricetags-outline"></i>
-                
-                  <a href="https://sfmonkey.github.io//tag/blog">
-                    blog
-                    
-                  </a>
-                
-              </span>
-            
-          </div>
-          <div class="post-content">
-            <p>做 Web 页面的移动端开发的时候，需要对移动端设备的尺寸，分辨率，屏幕种类还有如何最大程度还原设计效果有清晰的认识。这些知识网上也有，但大多都有些错误，所以自己记
+          <article class="post">
+            <h2 class="post-title">
+              前端工程师在移动端开发中遇到的像素问题
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · Invalid date ·
+              </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
+              
+            </div>
+            <div class="post-content">
+              <p>做 Web 页面的移动端开发的时候，需要对移动端设备的尺寸，分辨率，屏幕种类还有如何最大程度还原设计效果有清晰的认识。这些知识网上也有，但大多都有些错误，所以自己记
 录下来，留作参考与分享。</p>
 <h2 id="一般我们会遇到这几个问题">一般我们会遇到这几个问题：</h2>
 <ul>
@@ -242,44 +221,32 @@ retina 屏幕的判断标准是在第三代 iPad 大会上提出的</p>
 <p>为什么要叫做 retina 显示屏，我更倾向于这是一种噱头，人们赞美 Apple 制造的 retina 显示屏，与其说是因为给了大众一种更加好的用户体验（超高的分辨率，不过其实有好几家
 韩国与日本的厂家早已研发了出来），不如说 Apple 极致的垂直产品制造让它进入大众生活更贴切一些。</p>
 
-          </div>
+            </div>
+          </article>
         </div>
-
+    
         
           <div class="next-post">
-            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-12-18-js-highPreformance">
+            <div class="next">下一篇</div>
+            <a href="https://sfmonkey.github.io//post/2018-12-18-js-highPreformance">
               <h3 class="post-title">
-                下一篇：《高性能 javascript》总结
+                《高性能 javascript》总结
               </h3>
             </a>
-          </div>
-          
-      </div>
+          </div>  
+        
 
-      
-
-      <div class="site-footer">
-  <div class="slogan">温故而知新</div>
+        
+    
+        <div class="site-footer">
   Powered by Hve Notes
 </div>
 
-
-    </div>
-    <script type="application/javascript">
-
-hljs.initHighlightingOnLoad()
-
-var app = new Vue({
-  el: '#app',
-  data: {
-    menuVisible: false,
-  },
-})
-
+<script>
+  hljs.initHighlightingOnLoad()
 </script>
 
-
-
-
+      </div>
+    </div>
   </body>
 </html>

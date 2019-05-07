@@ -1,364 +1,278 @@
-
 <html>
   <head>
-    
-<meta charset="utf-8" >
-
-<title>Hve Notes</title>
-<meta name="description" content="温故而知新">
-
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>四辅的博客</title>
 <link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
 <link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
 
 
   </head>
   <body>
-    <div id="app" class="main">
-      <div class="site-header-container">
-  <div class="site-header">
-    <div class="left">
-      <a href="https://sfmonkey.github.io/">
-        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
-      </a>
-      <a href="https://sfmonkey.github.io/">
-        <h1 class="site-title">Hve Notes</h1>
-      </a>
-    </div>
-    <div class="right">
-      <transition name="fade">
-        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
-      </transition>
-    </div>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    四辅的博客
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
   </div>
 </div>
 
-<transition name="fade">
-  <div class="menu-container" style="display: none;" v-show="menuVisible">
-    <div class="menu-list">
-      
-        
-          <a href="/" class="menu purple-link">
-            首页
-          </a>
-        
-      
-        
-          <a href="/archives" class="menu purple-link">
-            归档
-          </a>
-        
-      
-        
-          <a href="/tags" class="menu purple-link">
-            标签
-          </a>
-        
-      
-        
-          <a href="/post/about" class="menu purple-link">
-            关于
-          </a>
-        
-      
-    </div>
-  </div>
-</transition>
-
-
-      <div class="content-container">
-        
-        
-<section class="post-item">
-    <div class="content">
+    
+        <div class="post-container">
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/about">
         <h2 class="post-title">关于</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · 2019-01-25 ·
+        </time>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> 2019-01-25</span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2018-4-12-cache">
         <h2 class="post-title">关于静态资源缓存的一点理解</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2018-4-9-dom">
         <h2 class="post-title">window document html 与 body</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2018-9-1-mobile-debug">
         <h2 class="post-title">移动端调试总结</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2018-9-27-bowser">
         <h2 class="post-title">前端性能分析总结（二）</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2018-9-27-preformance">
         <h2 class="post-title">前端性能分析总结（一）</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2019-1-24-set-map">
         <h2 class="post-title">Set、Map、WeakSet 和 WeakMap</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2019-1-25-hand-promise">
         <h2 class="post-title">手写一个 promise</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2019-1-29-bfs-dfs">
         <h2 class="post-title">深度优先遍历和广度优先遍历</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-<section class="post-item">
-    <div class="content">
+      </di>
+    </article>
+  
+    <article class="post">
       <a href="https://sfmonkey.github.io//post/2016-11-18-timeline-profile">
         <h2 class="post-title">利用 Chrome DevTools 进行网页性能分析</h2>
       </a>
+      <div class="post-info">
+        <time class="post-time">
+          · Invalid date ·
+        </time>
+        
+          <a href="https://sfmonkey.github.io//tag/blog" class="post-tag">
+            # blog
+          </a>
+        
+      </div>
+      
       <div class="post-abstract">
         
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
-
-
-<div class="pagination-container">
+      </di>
+    </article>
   
-    <a href="https://sfmonkey.github.io//" class="prev"><i class="icon-arrow-ios-back-outline"></i> 上一页</a>
+</div>
+
+    
+        <div class="pagination-container">
+  
+    <a href="https://sfmonkey.github.io//" class="prev-page">上一页</a>
   
   
 </div>
 
-
-      </div>
-
-      <div class="site-footer">
-  <div class="slogan">温故而知新</div>
+    
+        <div class="site-footer">
   Powered by Hve Notes
 </div>
 
-
-    </div>
-    <script type="application/javascript">
-
-hljs.initHighlightingOnLoad()
-
-var app = new Vue({
-  el: '#app',
-  data: {
-    menuVisible: false,
-  },
-})
-
+<script>
+  hljs.initHighlightingOnLoad()
 </script>
 
-
-
-
+      </div>
+    </div>
   </body>
 </html>
