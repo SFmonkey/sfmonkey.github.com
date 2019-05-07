@@ -1,0 +1,168 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>深度优先遍历和广度优先遍历 | Hve Notes</title>
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    Hve Notes
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              深度优先遍历和广度优先遍历
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · Invalid date ·
+              </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
+              
+            </div>
+            <div class="post-content">
+              <h1 id="pagetitle">{{page.title}}</h1>
+<pre><code>我们用二叉树作为数据结构，来写出深度优先遍历和广度优先遍历。
+</code></pre>
+<h2 id="深度优先遍历">深度优先遍历</h2>
+<blockquote>
+<p>该算法先将当前结点的孩子全部遍历结束，再遍历同一级的节点</p>
+</blockquote>
+<pre><code class="language-javascript">    // 递归
+    let res = [];
+    let dfs = function(node) {
+        if (node) {
+            res.push(node.val);
+            dfs(node.left);
+            dfs(node.right);
+        }
+    }
+    // 非递归
+    let dfs = function(nodes) {
+        let res = [];
+        let stack = [];
+        stack.push(nodes);
+        while (stack.length) {
+            let node = stack.pop();
+            res.push(node.val);
+            node.right &amp;&amp; stack.push(node.right); // 先压入右子树
+            node.left &amp;&amp; stack.push(node.left);
+        }
+        return res;
+    }
+</code></pre>
+<h2 id="广度优先遍历">广度优先遍历</h2>
+<p>当使用广度优先遍历的时候，先依次遍历兄弟节点，然后便利兄弟节点下的子节点，也就是按层次的去遍历。依次遍历根节点，然后是左孩子和右孩子。</p>
+<pre><code class="language-javascript">    // 递归
+    let res = [],
+        stack = [],
+        count = 0;
+
+    stack.push(nodes);
+    let bfs = function() {
+        let node = stack[count];
+        if (node) {
+            res.push(node.val);
+            stack.push(node.left);
+            stack.push(node.right);
+            count ++;
+        }
+        bfs();
+    }
+
+    // 非递归
+    let bfs = function() {
+        let res = [],
+            stack = [],
+            count = 0;
+
+        stack.push(nodes);
+        while(stack.length){
+            let node = stack.shift();
+            res.push(node.value);
+            node.left &amp;&amp; stack.push(node.left);
+            node.right &amp;&amp; stack.push(node.right);
+        }
+        return res;
+    }
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sfmonkey.github.io//post/2016-11-18-timeline-profile">
+              <h3 class="post-title">
+                利用 Chrome DevTools 进行网页性能分析
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

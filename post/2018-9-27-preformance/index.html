@@ -1,0 +1,256 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>前端性能分析总结（一） | Hve Notes</title>
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    Hve Notes
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              前端性能分析总结（一）
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · Invalid date ·
+              </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
+              
+            </div>
+            <div class="post-content">
+              <h1 id="pagetitle">{{page.title}}</h1>
+<p>这段时间忙到根本无暇写博客，刚有时间写了，又想着写这么一个大的题目，人生果然每天充满挑战。</p>
+<h2 id="performance-api">performance API</h2>
+<p>说说起因吧，有一天老大说</p>
+<blockquote>
+<p>“你在自己的模块里把性能分析加一下”</p>
+</blockquote>
+<p>于是我看了下公司内部的某个性能分析库和平台，以及它的文档。其中有一张图引人瞩目</p>
+<p><img src="/images/get-file-event.png" alt=""></p>
+<p>这张图从一种纬度来反应了用户从输入 url 到页面加载完成发生的各种事件。我们来详细看看，这些事件都代表什么意思。</p>
+<h3 id="事件周期">事件周期</h3>
+<ul>
+<li>
+<p>navigationStart</p>
+<p>请求开始，用户在浏览器中输入了网址，并且点击了回车。</p>
+</li>
+<li>
+<p>redirectStart</p>
+<p>第一个 HTTP 请求发生重定向的时间，必须为同域名的跳转，否则值为 0。</p>
+</li>
+<li>
+<p>redirectEnd</p>
+<p>最后一个 HTTP 请求发生重定向的时间，必须为同域名的跳转，否则值为 0。</p>
+</li>
+<li>
+<p>unloadStart</p>
+<p>前一个网页 unload 的时间，必须与当前页面同域，否则为 0。</p>
+</li>
+<li>
+<p>unloadEnd</p>
+<p>前一个网页 unload 事件执行完毕的时间。</p>
+</li>
+<li>
+<p>fetchStart</p>
+<p>浏览器准备好发送 Http 请求文档，这发生在检查本地缓存之前。</p>
+</li>
+<li>
+<p>domainLookupStart</p>
+<p>DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等</p>
+</li>
+<li>
+<p>domainLookupEnd</p>
+<p>DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等</p>
+</li>
+<li>
+<p>connnetStart</p>
+<p>HTTP（TCP） 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等
+注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间</p>
+</li>
+<li>
+<p>secureConnectionStart</p>
+<p>HTTPS 连接开始的时间，如果不是安全连接，则值为 0</p>
+</li>
+<li>
+<p>connectEnd</p>
+<p>HTTP（TCP） 完成建立连接的时间（完成握手），如果是持久连接，则与 fetchStart 值相等
+注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接完成的时间
+注意这里握手结束，包括安全连接建立完成、SOCKS 授权通过</p>
+</li>
+<li>
+<p>requestStart</p>
+<p>Http 开始真正请求文档的时间，包括从本地读取缓存。</p>
+</li>
+<li>
+<p>responseStart</p>
+<p>TTFB 开始接收响应的时间，包括从本地读取缓存。</p>
+</li>
+<li>
+<p>responseEnd</p>
+<p>Http 响应全部接收完成，包括从本地读取缓存。</p>
+</li>
+<li>
+<p>domLoading</p>
+<p>开始解析渲染 DOM 树</p>
+</li>
+<li>
+<p>domInteractive</p>
+<p>完成解析 DOM 树的时间</p>
+</li>
+<li>
+<p>domContentLoaded</p>
+<p>网页内资源加载开始的时间，DOM 树开始渲染，DOMContentLoaded事件完成之后的时刻，也是javascript类库中DOM ready事件触发的时刻。这里可以理解为 渲染树构建完成。</p>
+</li>
+<li>
+<p>domComplete</p>
+<p>所有资源已下载完毕，加载转环已停止旋转</p>
+</li>
+<li>
+<p>loadEventStart</p>
+<p>load 回调函数开始执行的时间</p>
+</li>
+<li>
+<p>loadEventEnd</p>
+<p>load 事件执行完毕</p>
+</li>
+</ul>
+<p>有了事件发生的时间，那我们如何利用这些事件？</p>
+<blockquote>
+<p>performance API</p>
+</blockquote>
+<p>我们可以利用现代浏览器的 performance API 来进行事件的记录，API 里记录了事件发生的时间戳，我们可以因此完成性能统计。其实大多的性能分析库，就是利用这个 performance API 做到的。</p>
+<h3 id="相关-api">相关 API</h3>
+<ul>
+<li>performance.timing</li>
+</ul>
+<p>记录了各个事件的时间点</p>
+<ul>
+<li>performance.getEntries()</li>
+</ul>
+<p>包含了页面中所有的 HTTP 请求</p>
+<ul>
+<li>performance.now()</li>
+</ul>
+<p>可以精确计算程序执行时间，不像 Date now 可能会受系统程序的影响而变得不精准，performance.now() 输出的是相对于 performance.timing.navigationStart(页面初始化) 的时间</p>
+<ul>
+<li>performance.mark()</li>
+</ul>
+<p>可以通过传入 name ，便捷的批量标记事件发生点</p>
+<ul>
+<li>performance.memory</li>
+</ul>
+<p>usedJSHeapSize 表示所有被使用的js堆栈内存；totalJSHeapSize 表示当前js堆栈内存总大小，这表示 usedJSHeapSize 不能大于 totalJSHeapSize，如果大于，有可能出现了内存泄漏。</p>
+<ul>
+<li>
+<p>performance.navigation</p>
+<ul>
+<li>
+<p>performance.navigation.type</p>
+<ul>
+<li>
+<p>0：网页通过点击链接、地址栏输入、表单提交、脚本操作等方式加载</p>
+</li>
+<li>
+<p>1：网页通过“重新加载”按钮或者location.reload()方法加载</p>
+</li>
+<li>
+<p>2：网页通过“前进”或“后退”按钮加载</p>
+</li>
+<li>
+<p>255：任何其他来源的加载</p>
+</li>
+</ul>
+</li>
+<li>
+<p>performance.navigation.redirectCount</p>
+<p>表示当前网页经过了多少次重定向跳转</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>只有大量的模仿之后，你才有能力去创造。</p>
+</blockquote>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sfmonkey.github.io//post/2019-1-24-set-map">
+              <h3 class="post-title">
+                Set、Map、WeakSet 和 WeakMap
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

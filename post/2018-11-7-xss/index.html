@@ -1,0 +1,243 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>前端安全（一）XSS 防御 | Hve Notes</title>
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    Hve Notes
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              前端安全（一）XSS 防御
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · Invalid date ·
+              </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
+              
+            </div>
+            <div class="post-content">
+              <h1 id="pagetitle">{{page.title}}</h1>
+<p>今天写这么一篇文章，完全是因为自己前些日子碰到的 web 安全问题，自己有了些许经历，所以准备写下来。网上有很多优秀的讲述 web 安全的文章，其中尤为推荐<a href="https://segmentfault.com/u/meituanjishutuandui">美团技术团队</a>写的系列文章。</p>
+<p>当然，网上已有的东西再重写一遍毫无意义，所以我记录的，只是在我看来需要再度提炼和注意的地方。</p>
+<h2 id="什么-是-xss">什么 是 XSS</h2>
+<blockquote>
+<p>Cross-Site Scripting（跨站脚本攻击）简称 XSS，是一种代码注入攻击。攻击者通过在目标网站上注入恶意脚本，使之在用户的浏览器上运行。利用这些恶意脚本，攻击者可获取用户的敏感信息如 Cookie、SessionID 等，进而危害数据安全。</p>
+</blockquote>
+<h2 id="xss-的种类">XSS 的种类</h2>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>存储区</th>
+<th>插入点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存储型 XSS</td>
+<td>后端数据库</td>
+<td>HTML</td>
+</tr>
+<tr>
+<td>反射型 XSS</td>
+<td>URL</td>
+<td>HTML</td>
+</tr>
+<tr>
+<td>DOM型 XSS</td>
+<td>后端数据库/前端存储/URL</td>
+<td>前端 JavaScript</td>
+</tr>
+</tbody>
+</table>
+<h2 id="xss-攻击要素">XSS 攻击要素</h2>
+<ul>
+<li>
+<p>攻击者提交恶意代码</p>
+</li>
+<li>
+<p>浏览器执行恶意代码</p>
+</li>
+</ul>
+<h2 id="xss-防御">XSS 防御</h2>
+<p>我们可以从 XSS 攻击要素和代码层面两个方面来考虑防御</p>
+<ul>
+<li>
+<p>从攻击要素防御</p>
+<ul>
+<li>攻击者提交恶意代码</li>
+</ul>
+<p>思路：这里能够使用的方法，就是<code>输入过滤</code>。</p>
+<p>方法：但在这里做的话有一个问题，前端做过滤可以绕过，后端做过滤又无法预测前端如何展现，当作 HTML 进行展示当然没有问题，但如果当作文本的话，就会出现乱码。</p>
+<p>乱码问题倒是可以解决，在前端，利用反转义重新处理。</p>
+<p>那可以直接不从提交恶意代码角度进行防御吗？既不使用输入过滤？</p>
+<ul>
+<li>
+<p>浏览器执行恶意代码</p>
+<p>从两个思路来解决：</p>
+<ul>
+<li>
+<p>防止 HTML 中出现注入</p>
+</li>
+<li>
+<p>防止 JavaScript 执行时，执行恶意代码</p>
+</li>
+</ul>
+<p>方法：</p>
+<ul>
+<li>
+<p>后端模版渲染改成纯前端 HTML 渲染，把代码和业务数据分隔开，我们明确的在插入数据阶段选择 HTML 插入或者文本插入。但这样还是存在两个问题，一个是首屏加载问题，一个是 DOM XSS 须单独解决。</p>
+</li>
+<li>
+<p>HTML 转义，说到底，还是进行输入过滤。</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>由此可以得出，在不能改变后端渲染的前提下，输入过滤是无法避免的。如果改为前端渲染，只需关心 DOM XSS 就好了。至于 DOM XSS，在一些本地存储的场景下，过滤转义也无法避免。</p>
+</blockquote>
+</li>
+<li>
+<p>从代码层面考虑防御</p>
+<p>我们可以从代码层面来预发和警惕 XSS 攻击。</p>
+<p>我们需要知道 XSS 攻击的来源。</p>
+<p>由上面的 XSS 种类可知，途径大概有以下这些。</p>
+<ul>
+<li>
+<p>用户的 UGC 信息</p>
+</li>
+<li>
+<p>第三方的链接</p>
+</li>
+<li>
+<p>URL 参数</p>
+</li>
+<li>
+<p>POST 参数</p>
+</li>
+<li>
+<p>Referer （可能来自不可信的来源）</p>
+</li>
+<li>
+<p>Cookie （可能来自其他子域注入）</p>
+</li>
+<li>
+<p>HTML 属性（href，src，style的background-image:url和expression(...)）</p>
+</li>
+<li>
+<p>onload、onerror、onclick、location、onmouseover 等事件</p>
+</li>
+</ul>
+<blockquote>
+<p>代码层面考虑防御是要求开发者在遇到上述情况足够的警觉，考虑此处是否会出现 XSS 攻击，如果会出现，那么解决方案还是<code>攻击要素防御</code>的解决方案。</p>
+</blockquote>
+</li>
+<li>
+<p>其他防御</p>
+<p>这里列举一些其他的防御手段，当然，这些手段可能无法在所有情况下解决问题。</p>
+<ul>
+<li>
+<p>CSP</p>
+</li>
+<li>
+<p>输入内容长度控制</p>
+</li>
+<li>
+<p>HTTP-only Cookie</p>
+</li>
+<li>
+<p>验证码</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><code>当然，上面所有的考虑只是出自前后端数据通信安全的前提下，但是 HTTPS 也不一定万无一失</code></p>
+<blockquote>
+<p>时间已经来到了下半场，剩下的只有残酷的白刃战。</p>
+</blockquote>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sfmonkey.github.io//post/about">
+              <h3 class="post-title">
+                关于
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

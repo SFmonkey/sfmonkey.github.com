@@ -1,0 +1,244 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>移动端调试总结 | Hve Notes</title>
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    Hve Notes
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              移动端调试总结
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · Invalid date ·
+              </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
+              
+            </div>
+            <div class="post-content">
+              <h1 id="pagetitle">{{page.title}}</h1>
+<p>这半年多以来，一直在做移动端的网页开发，在移动端网页中，一大痛点就是调试代码，如何快速的定位问题，如何在特定的手机和浏览器中调试代码。</p>
+<p>在这里总结一下，下面的调试方法会冥冥之中有一个顺序，也可以当作我们选择调试时的一个顺序。以下方法的具体操作细节我不再赘述，网上有很多。</p>
+<h2 id="eruda">Eruda</h2>
+<blockquote>
+<p>Eruda 是一个专为手机网页前端设计的调试面板，类似 DevTools 的迷你版，其主要功能包括：捕获 console 日志、检查元素状态、捕获XHR请求、显示本地存储和 Cookie 信息等等</p>
+</blockquote>
+<p>其实我们比较熟知的调试面板工具是 <a href="https://github.com/Tencent/vConsole">Vconsole</a> ，但从功能上，我们可以明显看出，Eruda 在 Vconsole 之上。</p>
+<p>使用方法和 Vconsole 大同小异：</p>
+<ul>
+<li>
+<p>在页面引入 js</p>
+</li>
+<li>
+<p>初始化方法</p>
+</li>
+</ul>
+<p>这里我们注意一下：</p>
+<p>The JavaScript file size is quite huge(about 100kb gzipped) and therefore not suitable to include in mobile pages. It's recommended to make sure eruda is loaded only when eruda is set to true on url(http://example.com/?eruda=true), for example:</p>
+<pre><code class="language-javascript">;(function () {
+    var src = 'node_modules/eruda/eruda.min.js';
+    if (!/eruda=true/.test(window.location) &amp;&amp; localStorage.getItem('active-eruda') != 'true') return;
+    document.write('&lt;scr' + 'ipt src=&quot;' + src + '&quot;&gt;&lt;/scr' + 'ipt&gt;');
+    document.write('&lt;scr' + 'ipt&gt;eruda.init();&lt;/scr' + 'ipt&gt;');
+})();
+</code></pre>
+<p><a href="https://github.com/liriliri/eruda">库地址</a></p>
+<h2 id="charles">charles</h2>
+<blockquote>
+<p>Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer to view all of the HTTP and SSL / HTTPS traffic between their machine and the Internet</p>
+</blockquote>
+<p>charles 是一个抓包工具，这里之所以可以用来 debug ，是因为 charles 可以：</p>
+<ul>
+<li>
+<p>修改网络协议</p>
+</li>
+<li>
+<p>替换请求文件</p>
+</li>
+</ul>
+<p>当我们需要用本地的 js 文件来代替线上 js 文件进行调试时，charles 就帮了我们大忙，也弥补了 Eruda 无法对 js 进行太多操作的缺点。</p>
+<p>charles 进行文件替换的原理很简单，就是在本地开了一个服务，然后起到了可以替换请求文件的中间件的作用。</p>
+<p>使用方法：</p>
+<ul>
+<li>
+<p>开启 charles 软件</p>
+</li>
+<li>
+<p>手机与电脑在 wifi 下</p>
+</li>
+<li>
+<p>手机设置代理</p>
+</li>
+</ul>
+<p>这里要注意的一点是，如果需要监听手机的 https 请求，需要给手机安装 charles 证书。</p>
+<h2 id="whistle">whistle</h2>
+<blockquote>
+<p>whistle is a cross-platform web debugging tool based on Node.js</p>
+</blockquote>
+<p>whistle基本上覆盖了所有抓包调试代理可以实现的功能，它的横向对比工具还有 <a href="https://github.com/wuchangming/spy-debugger">spy-debugger</a>。</p>
+<p>所以既然 whistle 可以代替 Eruda 和 charles（太重） ，那我们就没有必要使用它们了。</p>
+<p>whistle 的功能很强大：</p>
+<ul>
+<li>
+<p>Weinre</p>
+</li>
+<li>
+<p>Log</p>
+<p>Log 主要是为了把控制台打印的信息展示出来，规则配置也很简单</p>
+<blockquote>
+<p>xx.yy.com log://xx</p>
+</blockquote>
+</li>
+<li>
+<p>proxy</p>
+<p>代理的方法也很简单，在 whistle rules 里面配置需要代理的网址，然后用规则来转到线下</p>
+<blockquote>
+<p>pattern http://host:port/xxx</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="safari-与-iphone">Safari 与 iphone</h2>
+<p>其实，上面所讲的抓包调试代理有一个很大的缺点，那就是无法 debug js。在 iphone 机型下，为我们提供了解决方案。</p>
+<p>使用方法：</p>
+<ul>
+<li>
+<p>Mac Safari</p>
+</li>
+<li>
+<p>iphone Safari</p>
+</li>
+<li>
+<p>数据线</p>
+</li>
+</ul>
+<h2 id="chrome-与-android">Chrome 与 Android</h2>
+<p>当然，在 android 机型下，也有相对应的解决方案。</p>
+<p>使用方法：</p>
+<ul>
+<li>
+<p>PC Chrome</p>
+</li>
+<li>
+<p>Android Chrome</p>
+</li>
+<li>
+<p>数据线</p>
+</li>
+<li>
+<p>翻墙</p>
+</li>
+</ul>
+<p>在使用这种调试方法的时候，可能会出现一些问题</p>
+<ul>
+<li>
+<p>inspect 后页面显示空白</p>
+<p>解决方案：原因是被墙了，此服务需要连接谷歌的服务器，解决方法是翻墙，一般只需第一次 inspect 时翻，之后会缓存在本地。</p>
+</li>
+<li>
+<p>inspect 页面显示 HTTP/1.1 404 Not Found</p>
+<p>解决方案：原因是因为远程的浏览器（手机）版本比客户端（电脑）要新，需要在 chrome://inspect/#devices 下，使用 inspect fallback 进行监听。</p>
+</li>
+</ul>
+<blockquote>
+<p><code>Safari 与 iphone</code> <code>Chrome 与 Android</code> 不能在手机的其他浏览器和 App webview 中使用，这可能会让我们在调试一些特定浏览器问题上没有解决途径，这是就需要搭配一些其他手段。比如 本地代理 + try catch</p>
+</blockquote>
+<h2 id="总结">总结</h2>
+<ul>
+<li>
+<p><code>Eruda</code> <code>charles</code> <code>whistle</code> 在解决问题时用到的较多</p>
+</li>
+<li>
+<p><code>Safari 与 iphone</code> <code>Chrome 与 Android</code> 在发现问题时用到的较多</p>
+</li>
+<li>
+<p>如果问题发生在特定浏览器上，可以搭配本地代理( whistle 等) + try catch 定位 bug</p>
+</li>
+</ul>
+<blockquote>
+<p>这个世界就是不讲道理</p>
+</blockquote>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sfmonkey.github.io//post/2018-9-27-bowser">
+              <h3 class="post-title">
+                前端性能分析总结（二）
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

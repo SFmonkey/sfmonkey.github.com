@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>关于 | Hve Notes</title>
+<title>前端性能分析总结（二） | Hve Notes</title>
 <link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
 <link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
 
@@ -58,16 +58,35 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              关于
+              前端性能分析总结（二）
             </h2>
             <div class="post-info">
               <time class="post-time">
-                · 2019-01-25 ·
+                · Invalid date ·
               </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
               
             </div>
             <div class="post-content">
-              <p>这是关于的页面，可以在这里向世界介绍你！</p>
+              <h1 id="pagetitle">{{page.title}}</h1>
+<p>在上一篇性能分析总结中，我们从 API 的维度阐述了用户从输入 URL 到页面加载完成所经历了什么，自然而然的，我们想从浏览器的维护去理解一下这个问题。</p>
+<p>我们来看看开始解析 DOM 树（doming）后的步骤。</p>
+<p>在我们下载了文档之后，浏览器就开始解析 DOM 树，在解析 DOM 树的时候，我们需要用渲染引擎中的解析器。</p>
+<h2 id="解析器">解析器</h2>
+<p>解析器分为 <code>词法分析器</code> 和 <code>语法分析器</code> 两个组件。</p>
+<ul>
+<li>
+<p>词法分析器</p>
+<p>词法分析器负责将输入的内容分解为一个个有效的标记</p>
+</li>
+<li>
+<p>语法分析器</p>
+<p>语法分析器根据当前语言的语言来将标记构建为解析树。</p>
+</li>
+</ul>
 
             </div>
           </article>
@@ -76,9 +95,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://sfmonkey.github.io//post/2018-4-12-cache">
+            <a href="https://sfmonkey.github.io//post/2018-9-27-preformance">
               <h3 class="post-title">
-                关于静态资源缓存的一点理解
+                前端性能分析总结（一）
               </h3>
             </a>
           </div>  

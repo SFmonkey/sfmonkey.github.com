@@ -1,0 +1,256 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>手写一个 promise | Hve Notes</title>
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    Hve Notes
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              手写一个 promise
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · Invalid date ·
+              </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
+              
+            </div>
+            <div class="post-content">
+              <h1 id="pagetitle">{{page.title}}</h1>
+<pre><code class="language-javascript">
+    function Promise (executor) {
+
+        let _this = this,
+            _this.status = 'pending',
+            _this.value = undefined,
+            _this.reason = undefined,
+            _this.onResolvedCallbacks = [],
+            _this.onRejectedCallbacks = [];
+
+        function resolve (value) {
+            if (_this.status === 'pending') {
+                _this.status = 'resolved';
+                _this.value = value;
+
+                _this.onResolvedCallbacks.forEach(function(fn){
+                    fn();
+                });
+            }
+        };
+
+        function reject (reason) {
+            if (_this.status === 'pending') {
+                _this.status = 'reject';
+                _this.value = reason;
+
+                _this.onRejectedCallbacks.forEach(function(fn){
+                    fn();
+                });
+            }
+        };
+
+        try {
+            executor(resolve,reject);
+        } catch (e) {
+            reject(e);
+        }
+    }
+    
+    Promise.prototype.then = function(onFulfilled, onRejected) {
+
+        type onFulfilled === 'function' ? onFulfilled : function(value) {
+            return value;
+        }
+
+        type onRejected === 'function' ? onRejected : function(err) {
+            throw err;
+        }
+
+        let _this = this;
+        let promise2;
+
+        if (_this.status = 'pending') {
+            promise2 = new promise (function(resolve, reject) {
+                _this.onResolvedCallbacks.push(function(){
+                           
+                    try {
+                        let x = onFulfilled(_this.value);
+                        resolvePromise(promise2, x, resolve, reject);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+                _this.onRejectedCallbacks.push(function(){
+
+                    try {
+                        let x = onRejected(_this.reason);
+                        resolvePromise(promise2, x, resolve, reject);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            }
+        }
+
+        if (_this.status = 'resolved') {
+
+            let x = onFulfilled(_this.value);
+            promise2 = new promise (function(resolve, reject) {
+                try {
+                    resolvePromise(promise2, x, resolve, reject);
+                } catch (e) {
+                    reject(e);
+                }
+            })
+        }
+
+        if (_this.status = 'rejected') {
+            
+            let x = onRejected(_this.reason);
+            promise2 = new promise (function(resolve, reject) {
+                try {
+                    resolvePromise(promise2, x, resolve, reject);
+                } catch (e) {
+                    reject(e);
+                }
+            })
+        }
+
+        return promise2;
+    }
+
+    function resolvePromise(promise2, x, resolve, reject) {
+
+        if (promise2 === x) {
+            return reject(new TypeError('循环引用了'));
+        }
+    }
+
+    Promise.prototype.resolve = function (value) {
+        return new Promise(function(resolve,reject){
+            resolve(value);
+        })
+    }
+
+    Promise.prototype.reject = function (reason) {
+        return new Promise(function(resolve,reject){
+            resolve(reason);
+        })
+    }
+
+    Promise.prototype.race = function (promises) {
+        return new Promise(function(resolve,reject){
+            for ( let i = 0; i &lt; promises.length; i ++) {
+                promises[i].then(resolve,reject);
+            }
+        })
+    }
+
+    Promise.prototype.all = function (promises) {
+        return new Promise(function(resolve,reject){
+
+            let arr = [];
+            let i = 0; 
+
+            function processData(index, y) {
+                arr[index] = y;
+                if (++i === promises.length) {
+                    resolve(arr);
+                }
+            }
+
+            for ( let i = 0; i &lt; promises.length; i ++) {
+                promises[i].then(function(y){
+                    processData(i, y)
+                },reject);
+            }
+        })
+    }
+
+    module.exports = Promise
+</code></pre>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sfmonkey.github.io//post/2019-1-29-bfs-dfs">
+              <h3 class="post-title">
+                深度优先遍历和广度优先遍历
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>

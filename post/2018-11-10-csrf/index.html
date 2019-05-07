@@ -1,0 +1,202 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>前端安全（二）CSRF 防御 | Hve Notes</title>
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sfmonkey.github.io/">
+  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
+  </a>
+  <h1 class="site-title">
+    Hve Notes
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+</div>
+
+      
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              前端安全（二）CSRF 防御
+            </h2>
+            <div class="post-info">
+              <time class="post-time">
+                · Invalid date ·
+              </time>
+              
+                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
+                  # blog
+                </a>
+              
+            </div>
+            <div class="post-content">
+              <h1 id="pagetitle">{{page.title}}</h1>
+<p>写这篇文章的目的，主要是为了让自己对学习到的知识进行提炼和梳理，对于可以在网上找到答案的东西，没必要再次写出来。</p>
+<h2 id="什么是-csrf">什么是 CSRF</h2>
+<p>cross site request forgery , 攻击者诱导用户进入第三方网站，在第三方网站中，向被攻击网站发送跨站请求，利用受害者在被攻击网站已经获取到的注册凭证，绕过后台验证，冒充用户对被攻击网站执行某种操作的目的。</p>
+<p>攻击流程：</p>
+<ul>
+<li>
+<p>用户登陆被攻击网站 a.com ，并保留了登陆凭证。</p>
+</li>
+<li>
+<p>攻击者诱导用户访问了第三方网站 b.com</p>
+</li>
+<li>
+<p>期间第三方网站向被攻击网站发送了 a.com?act=xxx,浏览器默认携带了 a.com 的 cookie</p>
+</li>
+<li>
+<p>a.com 接到请求，并验证登陆凭证，误以为是用户发送的请求</p>
+</li>
+<li>
+<p>a.com 执行了 a.com?act=xxx 请求</p>
+</li>
+<li>
+<p>攻击完成，攻击者冒充用户，完成了请求执行</p>
+</li>
+</ul>
+<h2 id="攻击类型">攻击类型</h2>
+<ul>
+<li>
+<p>GET 请求</p>
+<p>图片请求</p>
+</li>
+<li>
+<p>POST 请求</p>
+<p>表单</p>
+</li>
+<li>
+<p>链接</p>
+<p>恶意链接，诱导点击</p>
+</li>
+</ul>
+<h2 id="csrf-特点">CSRF 特点</h2>
+<ul>
+<li>
+<p>攻击一般发起在第三方网站，而不是被攻击的网站。被攻击的网站无法防止攻击发生。</p>
+</li>
+<li>
+<p>攻击利用受害者在被攻击网站的登录凭证，冒充受害者提交操作；而不是直接窃取数据。</p>
+</li>
+<li>
+<p>整个过程攻击者并不能获取到受害者的登录凭证，仅仅是“冒用”。</p>
+</li>
+<li>
+<p>跨站请求可以用各种方式：图片URL、超链接、CORS、Form提交等等。部分请求方式可以直接嵌入在第三方论坛、文章中，难以进行追踪。</p>
+</li>
+</ul>
+<p>CSRF 大多发生在外域来进行攻击，但是如果主要可以被潜入上面的三种攻击类型，那么也可以在本域进行攻击，且更加难以防御。</p>
+<h2 id="防御">防御</h2>
+<ul>
+<li>
+<p>首先发生在本域的攻击，这里我们可以对本域的类似评论区等可以嵌入请求和链接的地方进行处理，采取禁止外链或提示等操作。</p>
+</li>
+<li>
+<p>如果攻击发生在外域，那么我们需要从两个角度来思考防御</p>
+<ul>
+<li>
+<p>攻击发生在外域</p>
+<ul>
+<li>
+<p>同源检测</p>
+<ul>
+<li>
+<p>Origin Header</p>
+</li>
+<li>
+<p>Referer Header</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Samesite Cookie</p>
+</li>
+</ul>
+</li>
+<li>
+<p>攻击者不能获取 cookie ，只能冒用</p>
+<ul>
+<li>
+<p>CSRF Token</p>
+</li>
+<li>
+<p>双重Cookie验证</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>参考资料：</p>
+<p><a href="https://segmentfault.com/a/1190000016659945"> 前端安全系列之二：如何防止CSRF攻击？</a></p>
+
+            </div>
+          </article>
+        </div>
+    
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sfmonkey.github.io//post/2018-11-7-xss">
+              <h3 class="post-title">
+                前端安全（一）XSS 防御
+              </h3>
+            </a>
+          </div>  
+        
+
+        
+    
+        <div class="site-footer">
+  Powered by Hve Notes
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
