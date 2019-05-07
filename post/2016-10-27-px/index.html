@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>前端工程师在移动端开发中遇到的像素问题 | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">前端工程师在移动端开发中遇到的像素问题</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> Invalid date</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://sfmonkey.github.io//tag/blog">
+                    blog
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <p>做 Web 页面的移动端开发的时候，需要对移动端设备的尺寸，分辨率，屏幕种类还有如何最大程度还原设计效果有清晰的认识。这些知识网上也有，但大多都有些错误，所以自己记
+录下来，留作参考与分享。</p>
+<h2 id="一般我们会遇到这几个问题">一般我们会遇到这几个问题：</h2>
+<ul>
+<li>chrome device 模式下的数值的单位</li>
+<li>&lt;meta name='viewport' content='width=device-width，initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes'&gt; 的作用</li>
+<li>手机像素和 visual viewport 的关系</li>
+</ul>
+<p>我们需要清楚有关像素的几个概念：</p>
+<ul>
+<li>分辨率</li>
+<li>设备像素</li>
+<li>设备独立像素</li>
+<li>css 像素</li>
+<li>PPI</li>
+<li>DPR</li>
+</ul>
+<h3 id="分辨率">分辨率</h3>
+<p>泛指量测或显示系统对细节的分辨能力，分辨率越高越能表现出更多的细节，但相对的，因为记录的信息更多，文件也就会越大。</p>
+<p><img src="http://121.42.215.169/blog_images/pixel.PNG" alt=""></p>
+<p>1920*1080（推荐）意味着这个电脑在横向上设置了 1920 个像素，纵向上设置了 1080 个像素，当然电脑上的分辨率是可以调节的，但只是有效像素个数减少了。</p>
+<h3 id="设备像素">设备像素</h3>
+<p>设备像素即 physic pixel，就是设备的像素大小。比如 iPhone 6 Plus 的物理分辨率为 1080*1920</p>
+<h3 id="设备独立像素">设备独立像素</h3>
+<p>也叫密度无关像素，代表着可以由程序使用并控制的虚拟像素，设备虚拟像素和设备像素之间存在着一定的对应关系。这个在后面会讲到。</p>
+<h3 id="css-像素">css 像素</h3>
+<p>前端工程师在编写网页时用到的 css 像素单位，是抽象的，不是实际存在的。</p>
+<h3 id="ppi">PPI</h3>
+<p><img src="http://121.42.215.169/blog_images/ppi.png" alt=""></p>
+<h3 id="dpr">DPR</h3>
+<p>即device pixel route ，在同一方向上的设备像素与设备独立像素的比值。它也有一个别名叫做scale，在iPhone里面的 scale 有1x,2x,3x而Android里面就多了。
+我们要知道在手机移动端的几个概念：</p>
+<ul>
+<li>visual viewport</li>
+<li>layout viewport</li>
+<li>ideal viewport</li>
+</ul>
+<h3 id="visual-viewport">visual viewport</h3>
+<p>虚拟视口。它是手机的页面绘制区，大小不一，以设备独立像素为单位。
+计算方法：document.documentElement.clientWidth，document.body.clientWidth(IE)</p>
+<h3 id="layout-viewport">layout viewport</h3>
+<p>布局视口。它是手机需要展示的页面总区域。它在不同的浏览器中，大小也是不同的</p>
+<pre><code>Safari iPhone:980px
+Opera:850px
+Android Webkit:800px
+IE:974px
+</code></pre>
+<p>计算方法：window.innerWidth</p>
+<h3 id="ideal-viewport">ideal viewport</h3>
+<p>理想视口。一般当我们使用 &lt;meta name='viewport'  content='width=device-width'&gt; 时可以得到。</p>
+<p><img src="http://121.42.215.169/blog_images/visualviewport.jpg" alt=""> <img src="http://121.42.215.169/blog_images/layoutviewport.jpg" alt=""></p>
+<p><strong>如果我们把 viewport 当做打开的高德地图，那么 visual viewport就是打开时显示的局部地图，layout viewport就是缩小地图后显示的总地图， ideal viewport 就是我们将总地图的宽度
+变为了 visual viewport 的宽度。</strong></p>
+<p>有了这些基础后，再来解决上面的问题</p>
+<h3 id="那我们平时-chrome-下的-device-模式它是什么像素呢">那我们平时 chrome 下的 device 模式，它是什么像素呢？</h3>
+<p><img src="http://121.42.215.169/blog_images/device.PNG" alt=""></p>
+<p>利用上面计算visual viewport 和 layout viewport 的方法，我们计算出 device 模式的像素与 visual viewport的像素一致，是设备独立像素，在数值上等于 css 像素。</p>
+<p><img src="http://121.42.215.169/blog_images/test.PNG" alt=""></p>
+<h3 id="上面讲过的-meta-nameviewport-contentwidthdevice-width它在常见的响应式页面中到底起什么作用">上面讲过的 &lt;meta name='viewport' content='width=device-width'&gt;，它在常见的响应式页面中到底起什么作用？</h3>
+<p>meta viewport 最早是由苹果公司提出的，后被 MSN 引为规范，其中:</p>
+<pre><code>width=device-width:表示宽度是设备屏幕的宽度
+initial-scale:表示初始的缩放比例
+minimum-scale:表示最小的缩放比例
+maximum-scale:表示最大的缩放比例
+user-scalable:表示用户是否可以调整缩放比例
+</code></pre>
+<p>用两个 demo 可以很清楚的说明问题</p>
+<p><a href="https://googlesamples.github.io/web-fundamentals/fundamentals/design-and-ui/responsive/vp-no.html">查看示例</a> <a href="https://googlesamples.github.io/web-fundamentals/fundamentals/design-and-ui/responsive/vp.html">查看示例</a></p>
+<p>当然，如果你使用过宽的css绝对宽度或者较大的绝对定位值，那么 width=device-width 是不会起作用的，建议使用相对宽度值，例如 width:100%</p>
+<h3 id="手机像素和-visual-viewport-的关系">手机像素和 visual viewport 的关系</h3>
+<p>这里的visual viewport 也就是手机整个屏幕可显示内容的多少
+要理解两者的关系，我们先来看看一张表格</p>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>iPhone 3Gs</th>
+<th>4(s)</th>
+<th>5c</th>
+<th>6</th>
+<th>6+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备分辨率</td>
+<td>320*480</td>
+<td>640*960</td>
+<td>640*1136</td>
+<td>750*1334</td>
+<td>1080*1920</td>
+</tr>
+<tr>
+<td>对角线(inh)</td>
+<td>3.5</td>
+<td>3.5</td>
+<td>4</td>
+<td>4.7</td>
+<td>5.5</td>
+</tr>
+<tr>
+<td>visual viewport</td>
+<td>320*480</td>
+<td>320*480</td>
+<td>320*568</td>
+<td>375*667</td>
+<td>414*736</td>
+</tr>
+<tr>
+<td>scale</td>
+<td>@1x</td>
+<td>@2x</td>
+<td>@2x</td>
+<td>@2x</td>
+<td>@3x</td>
+</tr>
+<tr>
+<td>PPI</td>
+<td>163</td>
+<td>326</td>
+<td>326</td>
+<td>326</td>
+<td>401</td>
+</tr>
+</tbody>
+</table>
+<p>我们可以看出来很明显的公式痕迹,设备分辨率，逻辑像素（即 visual viewport）与 scale，当然三者之间并没有明显的从属关系，而是相互影响。
+这里还有几个问题需要注意:</p>
+<ul>
+<li>映射</li>
+</ul>
+<p>从上面的表格可以看出iPhone 6 plus的逻辑像素是414*736，但如果手机设计者不设计为这个尺寸，但物理分辨率（设备分辨率）和scale 不变呢，那么手机就不得不把逻辑像素不是
+414*736的元素强行放大或缩小到屏幕上，这就是映射。</p>
+<ul>
+<li>界面 UI 元素的物理大小</li>
+</ul>
+<p>我们首先清楚一个概念，当逻辑像素一定时，它在一行可显示的内容是有限的，比如如果字体大小一定，iPhone 6 一行只能显示确定的字数。
+那么我们可以做一个假设，当layout viewport 一定时，width=100%，这一行显示的元素，比如字体和按键，是会因为逻辑像素的增加而增加，但手机屏幕的物理大小是不变的，这就
+会导致映射而字体与按钮变小，更难阅读和点击。</p>
+<ul>
+<li>retina 显示屏</li>
+</ul>
+<p>讲到这里，就又有一个名词不得不讲，那就是 retina 视网膜显示屏。因为它很容易产生 scale，所以更容易与 scale 混淆，而影响我们对上述问题的判断。
+retina 视网膜屏幕是 Apple 公司在 iPhone4 的时候推出的一种显示屏，因为有着人肉眼无法分辨的像素点，所以画面显示相当细腻，不难猜出，要在与以前相差不大的屏幕上得到这
+样的效果，那么对于分辨率的要求是相当高的，即在手机上，必须有大于 300 的 PPI 才可以做到。
+retina 屏幕的判断标准是在第三代 iPad 大会上提出的</p>
+<p><img src="http://121.42.215.169/blog_images/retina.jpg" alt=""></p>
+<p>为什么要叫做 retina 显示屏，我更倾向于这是一种噱头，人们赞美 Apple 制造的 retina 显示屏，与其说是因为给了大众一种更加好的用户体验（超高的分辨率，不过其实有好几家
+韩国与日本的厂家早已研发了出来），不如说 Apple 极致的垂直产品制造让它进入大众生活更贴切一些。</p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-12-18-js-highPreformance">
+              <h3 class="post-title">
+                下一篇：《高性能 javascript》总结
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
