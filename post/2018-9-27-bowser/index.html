@@ -1,77 +1,98 @@
+
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-<meta name="description" content="" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+<meta charset="utf-8" >
+
 <title>前端性能分析总结（二） | Hve Notes</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
 <link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
 <link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-<script src="https://cdn.bootcss.com/moment.js/2.23.0/moment.min.js"></script>
 
 
   </head>
   <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://sfmonkey.github.io/">
-  <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="80px" height="80px">
-  </a>
-  <h1 class="site-title">
-    Hve Notes
-  </h1>
-  <p class="site-description">
-    温故而知新
-  </p>
-  <div class="menu-container">
-    
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
-    
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
-    
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
-    
-      
-        <a href="/post/about" class="menu">
-          关于
-        </a>
-      
-    
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">Hve Notes</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
   </div>
 </div>
 
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
       
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
         <div class="post-detail">
-          <article class="post">
-            <h2 class="post-title">
-              前端性能分析总结（二）
-            </h2>
-            <div class="post-info">
-              <time class="post-time">
-                · Invalid date ·
-              </time>
-              
-                <a href="https://sfmonkey.github.io//tag/blog" class="post-tags">
-                  # blog
-                </a>
-              
-            </div>
-            <div class="post-content">
-              <h1 id="pagetitle">{{page.title}}</h1>
+          <h2 class="post-title">前端性能分析总结（二）</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> Invalid date</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://sfmonkey.github.io//tag/blog">
+                    blog
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <h1 id="pagetitle">{{page.title}}</h1>
 <p>在上一篇性能分析总结中，我们从 API 的维度阐述了用户从输入 URL 到页面加载完成所经历了什么，自然而然的，我们想从浏览器的维护去理解一下这个问题。</p>
 <p>我们来看看开始解析 DOM 树（doming）后的步骤。</p>
 <p>在我们下载了文档之后，浏览器就开始解析 DOM 树，在解析 DOM 树的时候，我们需要用渲染引擎中的解析器。</p>
@@ -88,32 +109,44 @@
 </li>
 </ul>
 
-            </div>
-          </article>
+          </div>
         </div>
-    
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://sfmonkey.github.io//post/2018-9-27-preformance">
-              <h3 class="post-title">
-                前端性能分析总结（一）
-              </h3>
-            </a>
-          </div>  
-        
 
         
-    
-        <div class="site-footer">
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-9-27-preformance">
+              <h3 class="post-title">
+                下一篇：前端性能分析总结（一）
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
   Powered by Hve Notes
 </div>
 
-<script>
-  hljs.initHighlightingOnLoad()
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
 </script>
 
-      </div>
-    </div>
+
+
+
   </body>
 </html>
