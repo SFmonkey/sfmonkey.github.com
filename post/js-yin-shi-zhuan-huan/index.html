@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>负 margin 学习总结 | 四辅的博客</title>
+<title>js 隐式转换 | 四辅的博客</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -76,46 +76,30 @@
 
       <div class="content-container">
         <div class="post-detail">
-          <h2 class="post-title">负 margin 学习总结</h2>
+          <h2 class="post-title">js 隐式转换</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> Invalid date</span>
-            
-              <span>
-                <i class="icon-pricetags-outline"></i>
-                
-                  <a href="https://sfmonkey.github.io//tag/blog">
-                    blog
-                    
-                  </a>
-                
-              </span>
+            <span><i class="icon-calendar-outline"></i> 2019-05-08</span>
             
           </div>
           <div class="post-content">
-            <p>在上一篇博客 <a href="https://sfmonkey.github.io/blog/2016/07/footer.html">footer 布局总结</a>中，有关于负 margin 的应用提及，负 margin 的
-使用可以替代那些较危险的 relative/absolute 属性，还可以达到一般 CSS 属性所不能达到的效果， 化繁为简、化腐朽为神奇。</p>
-<p>一个完整的 margin 属性是这么写的</p>
-<pre><code class="language-css">margin：top right bottom left;
-</code></pre>
-<p>根据<a href="http://www.hicss.net/">海玉</a>的博客，我们可以引入两类参考线来解释 margin 问题，top 和 left 的参考线属于一类， right 和 bottom 的
-参考线属于一类。top 和 left 是以外元素为参考，right 和 bottom 是以元素本身为参考。</p>
-<p>首先，我们来看一个<a href="https://sfmonkey.github.io/demo/margin.html">demo</a></p>
-<p>当我们改变top 与 left 属性时，这条参考线就是该元素的紧邻元素的边界（包括 margin ），如果 top 和 left 是负的，那么以上面的 demo 为例，example
-元素会以 wrapper 元素边缘为基准，反过来向上和向左推进一段距离。</p>
-<p>当我们改变 right 和 bottom 属性时，这条参考线就是它自身的边界，如果 right 和 bottom 是负的，那么以上面的 demo 为例，下方的 normal 元素会以 example
-元素边缘为基准，normal 元素向上提，如果 normal 是内联元素，normal 元素向左提。</p>
-<p>关于负 margin 的一些<a href="http://www.hicss.net/i-know-you-do-not-know-the-negative-margin/">实例</a></p>
-<p>参考资料:<a href="http://www.hicss.net/i-know-you-do-not-know-the-negative-margin/">我知道你不知道的负 Margin </a></p>
-<pre><code>海玉的博客需要科学上网浏览</code></pre>
+            <p>对于弱类型语言，我们会经常遇到类型转换的情景， 如果搞不懂原理，会在遇到类型转换的时候只能凭借过往的经验处理，但心里还是没有一个清晰的认知。</p>
+<p>js 的类型转换多发生在 <code>算数运算符</code>，<code>关系运算符</code>，<code>判断语句</code> 中，在这些场景中，类型会按照特定的规则，进行类型转换。我们来说说这些规则：</p>
+<p>首先在算数运算符中，除了 + 号以外，其他的如 - * / ，都需要将运算符两边的类型转换为 Number，js 引擎通过 ToNumber 方法来进行类型转换。</p>
+<p>如果算数运算符是 + 的话，如果有复杂类型，我们先将其转换为简单类型，在简单类型中（null, undefined, boolean,string,number）, 如果存在 string，我们将算数运算符两边转换为 string 对待。否则，将类型向 number 转换。</p>
+<p>其次是关系运算符，我们将运算符两边转换为基本类型后，如果两个操作数都是数值，则进行数值比较，如果两个操作数都是字符串，则进行按位比较。如果操作数有数值，则进行另一操作数数值转换。因为可能会有字符串与数值比较的情况，字符串转换为 NaN，NaN 与数字比较时，总是返回 false 。</p>
+<p>这里我们再讲一下 == 。双等运算符判断稍显复杂，详细参见：</p>
+<p><a href="https://juejin.im/post/5a7172d9f265da3e3245cbca">你所忽略的js隐式转换</a></p>
+<p>这里还有几道练习题，可以试试看：</p>
+<p><a href="https://www.hankewins.com/blog/%E5%89%8D%E7%AB%AF%E8%BF%9B%E9%98%B6%E7%B3%BB%E5%88%97%EF%BC%88%E7%AC%AC3%E6%9C%9F%EF%BC%89%EF%BC%9A%E5%B8%B8%E8%A7%81%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98-%E2%80%94-%E9%9A%90%E5%BC%8F%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">前端进阶系列（第3期）：常见的面试题 — 隐式类型转换</a></p>
 
           </div>
         </div>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://sfmonkey.github.io//post/2016-11-18-timeline-profile">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-4-12-cache">
               <h3 class="post-title">
-                下一篇：利用 Chrome DevTools 进行网页性能分析
+                下一篇：关于静态资源缓存的一点理解
               </h3>
             </a>
           </div>
