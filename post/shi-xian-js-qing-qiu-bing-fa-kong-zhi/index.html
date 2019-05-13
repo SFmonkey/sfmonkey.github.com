@@ -1,10 +1,11 @@
 
+<!DOCTYPE html>
 <html>
   <head>
     
 <meta charset="utf-8" >
 
-<title>四辅的博客</title>
+<title>实现 js 请求并发控制 | 四辅的博客</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -74,96 +75,62 @@
 
 
       <div class="content-container">
-        
-        
-<section class="post-item">
-    <div class="content">
-      <a href="https://sfmonkey.github.io//post/2016-10-27-px">
-        <h2 class="post-title">前端工程师在移动端开发中遇到的像素问题</h2>
-      </a>
-      <div class="post-abstract">
-        
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> 2016-10-27</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
+        <div class="post-detail">
+          <h2 class="post-title">实现 js 请求并发控制</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2019-05-13</span>
             
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
+          </div>
+          <div class="post-content">
+            <pre><code class="language-javascript">const requestPool = (urls, num, callback) =&gt; {
+    const urlsPool = [...urls];
+    let pendPool = [];
 
-<section class="post-item">
-    <div class="content">
-      <a href="https://sfmonkey.github.io//post/2016-7-25-githubpages">
-        <h2 class="post-title">github pages 部署总结</h2>
-      </a>
-      <div class="post-abstract">
-        
-      </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> 2016-07-25</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
+    const refresh = () =&gt; {
+        if (urlsPool.length) {
+            const url = urlsPool.pop();
+            requestHandle(url);
+        } else {
+            callback();
+        }
+    }
 
-<section class="post-item">
-    <div class="content">
-      <a href="https://sfmonkey.github.io//post/2016-11-18-timeline-profile">
-        <h2 class="post-title">利用 Chrome DevTools 进行网页性能分析</h2>
-      </a>
-      <div class="post-abstract">
+    const requestHandle = async (url) =&gt; {
+        const key = Symbol(url);
+
+        pendPool.push(key);
+        const data = await fetch(url);
+        pendPool.filter((v) =&gt; {
+            return v !== key
+        });
+        refresh();
+
+        return data;
+    }
+
+    const limit = Math.min(num, urlsPool.length);
+
+    for (let i = 0; i &lt; limit; i++) {
+        refresh();
+    }
+}
+</code></pre>
+
+          </div>
+        </div>
+
         
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-4-9-dom">
+              <h3 class="post-title">
+                下一篇：window document html 与 body
+              </h3>
+            </a>
+          </div>
+          
       </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> Invalid date</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://sfmonkey.github.io//tag/blog">
-                blog
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
 
-
-<div class="pagination-container">
-  
-    <a href="https://sfmonkey.github.io//page/2/" class="prev"><i class="icon-arrow-ios-back-outline"></i> 上一页</a>
-  
-  
-</div>
-
-
-      </div>
+      
 
       <div class="site-footer">
   <div class="slogan">温故而知新</div>
