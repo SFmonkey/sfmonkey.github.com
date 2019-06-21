@@ -97,7 +97,7 @@ addBySeven(5, 10); // returns 22;
 </code></pre>
 <h3 id="柯里化">柯里化</h3>
 <blockquote>
-<p>将多个参数的函数转换为一系列使用一个参数的函数</p>
+<p>只使用传递给函数的一部分参数来调用它，让它返回一个函数去处理剩下的参数。</p>
 </blockquote>
 <pre><code class="language-javascript">add = (x, y, z) =&gt; x + y + z
 curryAdd = Curry(add);    //Curry = x =&gt; y =&gt; z =&gt; x + y + z
@@ -193,6 +193,8 @@ fn(&quot;a&quot;, &quot;b&quot;)(&quot;c&quot;) // [&quot;a&quot;, &quot;b&quot;
 fn(&quot;a&quot;)(&quot;b&quot;)(&quot;c&quot;) // [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
 fn(&quot;a&quot;)(&quot;b&quot;, &quot;c&quot;) // [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
 </code></pre>
+<h4 id="总结">总结</h4>
+<p>当然，从上面的三种应用场景可以看出，函数柯里化其实是一种工具方法，它将函数改造为更适合我们的模式，从闭包引入柯里化函数的概念，是因为根据概念 ： <code>只使用传递给函数的一部分参数来调用它，让它返回一个函数去处理剩下的参数</code>，所以柯里化函数是必然包含闭包的。</p>
 <h4 id="以上">以上</h4>
 <h4 id="献出心脏">献出心脏！！</h4>
 <p>参考资料：
