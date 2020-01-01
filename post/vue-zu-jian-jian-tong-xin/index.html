@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>实现 symbol Polyfill | 四辅的博客</title>
+<title>Vue 组件间通信 | 四辅的博客</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -76,96 +76,55 @@
 
       <div class="content-container">
         <div class="post-detail">
-          <h2 class="post-title">实现 symbol Polyfill</h2>
+          <h2 class="post-title">Vue 组件间通信</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2019-05-07</span>
-            
-              <span>
-                <i class="icon-pricetags-outline"></i>
-                
-                  <a href="https://sfmonkey.github.io//tag/blog">
-                    blog
-                    
-                  </a>
-                
-              </span>
+            <span><i class="icon-calendar-outline"></i> 2020-01-01</span>
             
           </div>
           <div class="post-content">
-            <pre><code class="language-javascript">		(function() {
-        var root = this;
-
-        var generateName = (function () {
-            var prefix = 0;
-
-            return function(descriptionStr){
-                prefix ++;
-                return '@@' + descriptionStr + '_' + prefix;
-            }
-        })()
-
-        var symbolPoyfill = function (description) {
-            if (root instanceof symbolPoyfill) throw new TypeError('symbol is not a constructor');
-
-            var descriptionStr = description == undefined ? undefined : String(description);
-
-            var symbol = Object.create({
-                toString: function() {
-                    return this.__Description__;
-                },
-                valueOf: function() {
-                    return this;
-                }
-            });
-
-            Object.defineProperties(symbol, {
-                '__Description__' : {
-                    value: generateName(descriptionStr),
-                    waritable: false,
-                    enumerable: false,
-                    configurable: false,
-                }
-            });
-
-            return symbol;
-        }
-
-        var forMap = {};
-
-        Object.defineProperties(symbolPoyfill, {
-            'for': {
-                value: function(key) {
-                    forMap[key] ? forMap[key] : forMap[descString] = symbolPoyfill(key)
-                },
-                waritable: true,
-                enumerable: false,
-                configurable: true
-            },
-            'keyFor': {
-                value: function(symbol) {
-                    for (var key in forMap) {
-                        if (forMap[key] === symbol) return key;
-                    }
-                },
-                waritable: true,
-                enumerable: false,
-                configurable: true
-            }
-        });
-
-					root.SymbolPolyfill = symbolPoyfill;
-			}
-		)()
-</code></pre>
+            <p>vue 组件间通信的方式有很多，有平时常常用到的，也有一些比较边界冷门的，所以有必要总结归纳一下，形成知识图谱，方便记忆。</p>
+<p>我们可以用传递层级来区分记忆：</p>
+<ul>
+<li>父传子</li>
+<li>子传父</li>
+<li>兄弟传递</li>
+<li>任意组件间</li>
+<li>祖先传后代</li>
+</ul>
+<h3 id="父传子">父传子</h3>
+<ol>
+<li>props</li>
+<li>$parent</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mi>t</mi><mi>t</mi><mi>r</mi><mi>s</mi><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">attrs/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">t</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">s</span><span class="mord mathrm">/</span></span></span></span>listener</li>
+</ol>
+<h3 id="子传父">子传父</h3>
+<ol>
+<li>$emit</li>
+<li>$children</li>
+<li>ref</li>
+</ol>
+<h3 id="兄弟传递">兄弟传递</h3>
+<ol>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi><mi>a</mi><mi>r</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">parent/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mord mathit">p</span><span class="mord mathit">a</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">e</span><span class="mord mathit">n</span><span class="mord mathit">t</span><span class="mord mathrm">/</span></span></span></span>root</li>
+</ol>
+<h3 id="任意组件间">任意组件间</h3>
+<ol>
+<li>bus （常用 vue 实例）</li>
+<li>vuex</li>
+</ol>
+<h3 id="祖先传后代">祖先传后代</h3>
+<ol>
+<li>provide/inject</li>
+</ol>
 
           </div>
         </div>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-4-12-cache">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-9-27-preformance">
               <h3 class="post-title">
-                下一篇：关于静态资源缓存的一点理解
+                下一篇：前端性能分析总结（一）
               </h3>
             </a>
           </div>
