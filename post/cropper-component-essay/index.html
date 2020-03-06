@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Cropper Component Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">Cropper Component Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-06</span>
+            
+          </div>
+          <div class="post-content">
+            <ol>
+<li>
+<p>如果我们想要实现一个裁剪组件，最核心的方法就是裁剪函数</p>
+<p><strong>裁剪函数需要用到 Html Canvas API</strong></p>
+<ul>
+<li>
+<p>创建画布</p>
+<pre><code class="language-js">const canvas = document.createElement(&quot;canvas&quot;);
+const ctx = canvas.getContext(&quot;2d&quot;);
+</code></pre>
+</li>
+<li>
+<p>绘制图像</p>
+<pre><code class="language-js">ctx.drawImage(img, dx, dy, width, height);
+</code></pre>
+</li>
+<li>
+<p>输出裁剪图像</p>
+<pre><code class="language-js">// 输出为 blob 格式
+canvas.toBlob(blob=&gt;{}, type, encoderOptions)
+// 输出为 dataUrl 格式
+canvas.toDataURL(type, encoderOptions)
+</code></pre>
+</li>
+<li>
+<p>调整画布</p>
+<pre><code class="language-js">// 旋转
+ctx.rotate()
+// 拉伸
+ctx.translate()
+//缩放
+ctx.scale()
+// ! save 只是保存的 CanvasRenderingContext2D 对象的状态以及对象的所有属性
+ctx.save() / ctx.restore()
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>当然裁剪组件不可能这么简单，我们还得需要一个容器，让使用者在里面进行图片的裁剪</p>
+<ul>
+<li>
+<p>在容器内放置用户上传的图片，给图片设置 scale tanslate rotate 属性</p>
+<pre><code class="language-html"></code></pre>
+</li>
+</ul>
+   <div
+ 			class="cropper-box"
+     :style="{
+     transform: 'scale(' + scale + ',' + scale + ') ' + 'translate3d('+ x / scale + 'px,' + y / scale + 'px,' + '0)' +  'rotateZ('+ rotate * 90 +'deg)'
+   }"
+   >
+     <img :src="imgs" />
+   </div>
+ 	```
+<ul>
+<li>设置图片可拖拽区域，一般与容器大小相同，其中产生的x ， y 就是图片在容器左上角移动的距离</li>
+</ul>
+<pre><code class="language-html">    &lt;div
+  class=&quot;cropper-drag-box&quot;
+  :class=&quot;{'cropper-move': canMove,'cropper-modal': cropping}&quot;
+  @mousedown=&quot;startMove&quot;
+  @touchstart=&quot;startMove&quot;
+&gt;&lt;/div&gt;
+</code></pre>
+</li>
+<li>
+<p>我们还需要一个裁剪框容器，裁剪框内出现的就是裁剪出的内容</p>
+<ul>
+<li>在裁剪框容器内同样放置用户上传的图片，给图片设置 scale tanslate rotate 属性</li>
+</ul>
+<pre><code class="language-html">&lt;div class=&quot;cropper-view-box&quot;&gt;
+    &lt;img
+      :src=&quot;imgs&quot;
+      :style=&quot;{
+					'transform': 'scale(' + scale + ',' + scale + ') ' + 'translate3d('+ (x - cropOffsertX) / scale  + 'px,' + (y - cropOffsertY) / scale + 'px,' + '0)'
+					+ 'rotateZ('+ rotate * 90 +'deg)'
+					}&quot;
+    /&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>这里的 x - cropOffsertX 与 y - cropOffsertY 就是裁剪框内图片相对于裁剪框左上角的位置</strong></p>
+<ul>
+<li>设置图片可拖拽区域，一般与容器大小相同，其中产生的changeX, changeY就是裁剪框容器距外层容器左上角移动的距离，注意裁剪框不要超出外层容器即可。</li>
+</ul>
+<pre><code class="language-html">&lt;span class=&quot;cropper-face cropper-move&quot; @mousedown=&quot;cropMove&quot; @touchstart=&quot;cropMove&quot;&gt;&lt;/span&gt;
+</code></pre>
+<ul>
+<li>
+<p>这里之所以还要放置一个与外面相同的图片，是为了让图片进入裁剪框时高亮显示，我们需要明白两张图片其实在视觉上在同一位置</p>
+<ul>
+<li>首先因为两张图片都是基于各自容器设置的绝对位置</li>
+</ul>
+<pre><code class="language-css">position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+</code></pre>
+<ul>
+<li>所以当 translate 时，外层裁剪容器根据自身移动时，移动为 x 与 y 那么内层裁剪框的根据自身移动 translate 就是 x- x - cropOffsertX 与 y - cropOffsertY，cropOffsertX 与 cropOffsertY 为裁剪框距离外层裁剪容器的距离</li>
+</ul>
+</li>
+<li>
+<p>还有一个逻辑较为复杂的地方是，裁剪框会被拉伸，随意改变大小</p>
+<ul>
+<li>
+<p>首先判断改变的是 X 还是 Y</p>
+</li>
+<li>
+<p>在里层继续判断产生的 changeX 和 changeY 是正数还是负数，结合下层来判断裁剪框是增大还是减小</p>
+</li>
+<li>
+<p>继续在第三内层判断 change 与 crop 的大小， 因为存在两极反转的情况</p>
+</li>
+</ul>
+<p><strong>比较绕，但我们可以这么想，首先第一层我们需要知道此时拖拽改变的是 X 还是 Y 轴，其次在 X 轴上裁剪框（正方形）存在两条边，那么我们就要第二层来知道产生的 change (拖拽距离) 为正还是为负，来分别处理两条边的情况，比如左边那条边 change 为负裁剪框增加，但是右边那条边却是减小。</strong></p>
+<p><strong>第三层 if 逻辑存在的理由是存在左边因为拖拽变成右边的情况（两极反转），在第三层里面，我们就去做 crop 大小和与外层容器距离的计算了（位置 + 大小 就能确定 crop 的情况了）</strong></p>
+<ul>
+<li>代码如下</li>
+</ul>
+<pre><code class="language-js">const changeW = nowX - this.cropX;
+const changeH = nowY - this.cropY;
+
+if (this.canChangeX) {
+  if (this.changeCropTypeX === 1) {
+    // 判断「两极反转」的情况
+    if (this.cropOldW - changeW &gt; 0) {
+      this.cropW =
+        this.containerWidth - this.cropPositionX - changeW &lt;=
+        this.containerWidth
+          ? this.cropOldW - changeW
+          : this.cropOldW + this.cropPositionX;
+      this.cropOffsertX =
+        this.containerWidth - this.cropPositionX - changeW &lt;=
+        this.containerWidth
+          ? this.cropPositionX + changeW
+          : 0;
+    } else {
+      // 左坐标线与右坐标线两极反转
+      this.cropW =
+        Math.abs(changeW) + this.cropPositionX &lt;= this.containerWidth
+          ? Math.abs(changeW) - this.cropOldW
+          : this.containerWidth - this.cropW - this.cropPositionX;
+      this.cropOffsertX = this.cropPositionX + this.cropOldW;
+    }
+  } else if (this.changeCropTypeX === 2) {
+    if (this.cropOldW + changeW &gt; 0) {
+      this.cropW =
+        this.cropOldW + changeW + this.cropPositionX &lt;=
+        this.containerWidth
+          ? this.cropOldW + changeW
+          : this.containerWidth - this.cropPositionX;
+      this.cropOffsertX = this.cropPositionX;
+    } else {
+      // 左坐标线与右坐标线两极反转
+      this.cropW =
+        Math.abs(changeW + this.cropOldW) &lt;= this.cropPositionX
+          ? Math.abs(changeW + this.cropOldW)
+          : this.cropPositionX;
+      this.cropOffsertX =
+        Math.abs(changeW + this.cropOldW) &lt;= this.cropPositionX
+          ? this.cropPositionX - Math.abs(changeW + this.cropOldW)
+          : 0;
+    }
+  }
+}
+
+if (this.canChangeY) {
+  if (this.changeCropTypeY === 1) {
+    // 判断「两极反转」
+    if (this.cropOldH - changeH &gt; 0) {
+      this.cropH =
+        this.cropPositionY + changeH &gt;= 0
+          ? this.cropOldH - changeH
+          : this.cropPositionY + this.cropOldH;
+
+      this.cropOffsertY =
+        this.cropPositionY + changeH &gt;= 0
+          ? this.cropPositionY + changeH
+          : 0;
+    } else {
+      this.cropH =
+        changeH - this.cropOldH &lt;=
+        this.containerHeight - this.cropPositionY - this.cropOldH
+          ? changeH - this.cropOldH
+          : this.containerHeight - this.cropPositionY - this.cropOldH;
+
+      this.cropOffsertY = this.cropPositionY + this.cropOldH;
+    }
+  } else if (this.changeCropTypeY === 2) {
+    if (changeH + this.cropOldH &gt; 0) {
+      this.cropH =
+        changeH &lt;=
+        this.containerHeight - this.cropOldH - this.cropPositionY
+          ? this.cropOldH + changeH
+          : this.containerHeight - this.cropPositionY;
+
+      this.cropOffsertY = this.cropPositionY;
+    } else {
+      this.cropH =
+        Math.abs(changeH + this.cropOldH) &lt;= this.cropPositionY
+          ? Math.abs(changeH + this.cropOldH)
+          : this.cropPositionY;
+
+      this.cropOffsertY =
+        Math.abs(changeH + this.cropOldH) &lt;= this.cropPositionY
+          ? this.cropPositionY - Math.abs(changeH + this.cropOldH)
+          : 0;
+    }
+  }
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>随笔真的很重要哇～</strong></p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-9-27-preformance">
+              <h3 class="post-title">
+                下一篇：前端性能分析总结（一）
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
