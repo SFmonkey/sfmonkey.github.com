@@ -123,20 +123,17 @@ ctx.save() / ctx.restore()
 <li>
 <p>当然裁剪组件不可能这么简单，我们还得需要一个容器，让使用者在里面进行图片的裁剪</p>
 <ul>
-<li>
-<p>在容器内放置用户上传的图片，给图片设置 scale tanslate rotate 属性</p>
-<pre><code class="language-html"></code></pre>
-</li>
+<li>在容器内放置用户上传的图片，给图片设置 scale tanslate rotate 属性</li>
 </ul>
-   <div
- 			class="cropper-box"
-     :style="{
-     transform: 'scale(' + scale + ',' + scale + ') ' + 'translate3d('+ x / scale + 'px,' + y / scale + 'px,' + '0)' +  'rotateZ('+ rotate * 90 +'deg)'
-   }"
-   >
-     <img :src="imgs" />
-   </div>
- 	```
+<pre><code class="language-html">	&lt;div
+		class=&quot;cropper-box&quot;
+		:style=&quot;{
+		transform: 'scale(' + scale + ',' + scale + ') ' + 'translate3d('+ x / scale + 'px,' + y / scale + 'px,' + '0)' +  'rotateZ('+ rotate * 90 +'deg)'
+	}&quot;
+	&gt;
+		&lt;img :src=&quot;imgs&quot; /&gt;
+	&lt;/div&gt;
+</code></pre>
 <ul>
 <li>设置图片可拖拽区域，一般与容器大小相同，其中产生的x ， y 就是图片在容器左上角移动的距离</li>
 </ul>
@@ -176,10 +173,10 @@ ctx.save() / ctx.restore()
 <li>首先因为两张图片都是基于各自容器设置的绝对位置</li>
 </ul>
 <pre><code class="language-css">position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
 </code></pre>
 <ul>
 <li>所以当 translate 时，外层裁剪容器根据自身移动时，移动为 x 与 y 那么内层裁剪框的根据自身移动 translate 就是 x- x - cropOffsertX 与 y - cropOffsertY，cropOffsertX 与 cropOffsertY 为裁剪框距离外层裁剪容器的距离</li>
