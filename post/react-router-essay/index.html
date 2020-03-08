@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>React Router Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">React Router Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-08</span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<p>关于 <a href="http://react-router.docschina.org/">react-router</a> 我们最常用的 API 有：</p>
+<ul>
+<li>Router</li>
+<li>Link</li>
+<li>Route</li>
+<li>Switch</li>
+<li>Redirect</li>
+</ul>
+<p>这五个 API 基本就可以帮助我们构建一个基础的前端路由系统了</p>
+<h3 id="router">Router</h3>
+<ul>
+<li>
+<p>其中 Router 分为 BrowserRouter，HashRouter 以及 MemoryRouter 三种。</p>
+<p><strong>BrowserRouter</strong> 是官方最为推荐的一种方式，它的优点在于 URL 地址按照路径划分，较为简洁与美观，使用 HTML5 history API 来保持页面的UI与URL同步。缺点在于 BrowserRouter 需要后端的支持，因为按照路径划分，就会导致用户可能直接访问某一路径，这就需要服务端有相应的路由支持。</p>
+<p><strong>HashRouter</strong> 的优点在于简单方便，它利用浏览器 URL Hash 来区分页面 path，不需要后端的支持。缺点在于 Hash Router 不管在 URL 的简洁性，location.key，location.state的支持，动态路由以及其他问题（hash 是没法传给后端的，其他页面拼接参数也需要注意）上，都没有 BrowserRouter 好用。</p>
+<p><strong>MemoryRouter</strong> 将 location 的改变放在内存中，我们在 URL 上是没有看到变化的，这在测试或非浏览器环境下非常适用，比如 RN。</p>
+</li>
+<li>
+<p>这里只记录下 BrowserRouter 的实现</p>
+<p>我们需要明白 BrowserRouter 需要提供的功能是什么</p>
+<ul>
+<li>
+<p>没得说，展示 children</p>
+<pre><code class="language-js">return this.props.chilren
+</code></pre>
+</li>
+<li>
+<p>提供一个context，将 history，location 传递下去</p>
+<pre><code class="language-jsx">&lt;RouterContext value={{history: this.history, location: this.state.location}}&gt;&lt;/RouterContext&gt;
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="link">Link</h3>
+<ul>
+<li>
+<p>Link API 分为 Link，NavLink 两种</p>
+<p><strong>Link</strong> 帮助我们提供声明式的，可访问的导航。</p>
+<p><strong>NavLink</strong> 是 Link 的一种特殊版本，在与 URL 相匹配时，给渲染元素提供一些样式。</p>
+</li>
+<li>
+<p>这里我们想一下 Link 的实现</p>
+<ul>
+<li>本质上还是 a 标签</li>
+</ul>
+<pre><code class="language-js">&lt;a onClick={handleClick}&gt;{this.props.children}&lt;/a&gt;
+</code></pre>
+<ul>
+<li>提供跳转功能</li>
+</ul>
+<p>当然我们不能使用原生的 href 属性了，因为会导致页面的刷新，我们需要使用 HTML history API 来帮助我们实现路由跳转</p>
+<pre><code>  ```js
+  handleClick(e, history) {
+  	e.preventDefault();
+  	const {to} = this.props;
+  	history.push(to);
+  }
+  ```
+</code></pre>
+</li>
+</ul>
+<h3 id="route">Route</h3>
+<ul>
+<li>
+<p><strong>Route</strong> 组件是 React Router 中最重要的组件，它的作用是在 location 与 Route 的 path 匹配时呈现一些 UI。</p>
+</li>
+<li>
+<p>我们来想一下实现，它都提供了那些功能</p>
+<ul>
+<li>path 属性，我们在内部判断 path 与 location 是否 match ，来显示对应的 UI</li>
+</ul>
+<pre><code class="language-js">const match = matchPath(location.path, {...this.props, path});
+</code></pre>
+<ul>
+<li>
+<p>Route 的 UI 呈现，一共有三种方式：children &gt; component &gt; render</p>
+<ul>
+<li>
+<p>如果 match 到了，那么就展示 children， component ，render 或者 null</p>
+</li>
+<li>
+<p>如果没有match到，那么就展示 children 或者 null</p>
+</li>
+</ul>
+<pre><code class="language-js">match
+		? children
+			? typeof children === 'function'
+				? children(props)
+				: children
+			: component
+			 ? React.createElement(component, props)
+				: render
+					? render(props)
+					: null
+		: typeof children === 'function'
+			? children(props)
+			: null
+</code></pre>
+</li>
+<li>
+<p>Route 可能会传入一个 location 属性，这时候就会首先使用传入的，而不是 URL 的。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="switch">Switch</h3>
+<ul>
+<li>
+<p><strong>Switch</strong> 即独占路由，渲染与 location 匹配的第一个子节点</p>
+</li>
+<li>
+<p>实现的大体思路</p>
+<ul>
+<li>拿到所有的子节点进行遍历，需要一个变量来记录是否已经有匹配的节点</li>
+</ul>
+<pre><code class="language-js">React.children.forEach(children, (child)=&gt; {
+	if (match === null &amp;&amp; React.isVaildElement) {
+	match = path ? matchPath(location.pathname, child.props) : context.match
+})
+return match ? React.cloneElement(child, {location, computedMatch: match}) : null;
+</code></pre>
+<ul>
+<li>如果找到了 location 与 path 相匹配的路由，就将它渲染出来，否则返回 null</li>
+</ul>
+</li>
+</ul>
+<h3 id="redirect">Redirect</h3>
+<ul>
+<li>
+<p><strong>Redirect</strong>将URL导航到一个新的地址</p>
+</li>
+<li>
+<p>实现的大体思路：</p>
+<ul>
+<li>接受 to 属性，利用 history API 将地址压入栈内</li>
+</ul>
+<pre><code class="language-js">render() {
+	const {to} = this.props;
+	return &lt;RouterContext&gt;{
+	context =&gt; {
+		const {history} = context;
+		reutrn &lt;LifeCycle isMounted={(history)=&gt;{history.push(to)}}&gt;&lt;/LifeCycle&gt;
+		}
+	}&lt;/RouterContext&gt;
+}
+</code></pre>
+<ul>
+<li>这里需要 LifeCycle 组件的原因是我们需要一个组件 mounted 的时机，来帮助我们完成入栈操作，并且 redirect 还可以在 render 中顺利执行 return</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-24-set-map">
+              <h3 class="post-title">
+                下一篇：Set、Map、WeakSet 和 WeakMap
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
