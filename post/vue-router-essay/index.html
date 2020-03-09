@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Vue Router Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">Vue Router Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-09</span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<p>Vue Router 的实现大致分为三个部分</p>
+<ul>
+<li>插件机制</li>
+<li>router-link</li>
+<li>router-view</li>
+</ul>
+<p>Vue Router 一共有三种模式， hash（默认），history 以及 abstract（支持 Nodejs 运行环境） ，我们这里暂且只谈 hash 模式。</p>
+<h3 id="插件机制">插件机制</h3>
+<p>Vue Router 是作为<strong>插件</strong>的形式接入到 Vue 中的，所以我们在实现 Vue Router 的具体功能前，需要先实现 Vue 插件机制。</p>
+<ul>
+<li>
+<p>插件主要的我们需要实现一个 install 函数</p>
+<pre><code class="language-js">export const install = () =&gt; {
+	Vue.mixin({
+		beforeCreate() {
+			if (this.$options.router) {
+				Vue.prototype.$router = this.$options.router;
+			}
+		}
+	});
+	Vue.component('RouterView', RouterView);
+	Vue.component('RouterLink', RouterLink);
+}
+</code></pre>
+<blockquote>
+<p>这里之所以要混入一个 beforeCreate ，是想要判断一下 new Vue 时是否添加了 Router 实例，从而添加全局 Router 实例</p>
+</blockquote>
+</li>
+<li>
+<p>当然为了应对 Vue 可能 Script 标签引入的方式，我们还需要判断处理下这种情况</p>
+<pre><code class="language-js">if (typeof window !== undefined &amp;&amp; window.vue) {
+	install(window.vue);
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="router-link">router-link</h3>
+<ul>
+<li>
+<p><strong>Router-LInk</strong> 底层其实也就是个 a 标签，因为是 hash 模式，to 属性我们会直接传给 a 标签的 href。</p>
+</li>
+<li>
+<p>核心代码如下</p>
+<pre><code class="language-js">vue.component('RouterLink', {
+	props: {
+			to: String, // 还可能是 Object
+			required: true
+	},
+	//这里不能使用 template ，因为我们引入的 Vue 一般是 runtime 版本，没有 compiler，无法解析 template
+	//因为这里是个js文件，如果是 vue 文件的话，vue-loader 还可以帮助我们解析 template
+	render(h) { 
+		return h('a', {attrs: {href: this.to}}, this.$slots.default);
+	}
+});
+</code></pre>
+</li>
+</ul>
+<h3 id="router-view">router-view</h3>
+<ul>
+<li>
+<p><strong>router-view</strong> 是帮助我们根据路由进行选择性展示 UI 的组件。</p>
+</li>
+<li>
+<p>因为 Vue Router 是根据 routes 表来进行路由配置的，我们需要根据当前的 hash 来与路由表进行匹配。</p>
+<pre><code class="language-js">// VueRouter.js
+match(routes) {
+	routes = routes || this.$options.routes;
+
+	for (const route of routes) {
+		if (route.path === &quot;/&quot; &amp;&amp; this.current === &quot;/&quot;) {
+			this.matched.push(route);
+			return;
+		}
+
+		if (route.path !== &quot;/&quot; &amp;&amp; this.current.indexOf(route.path) !== -1) {
+			this.matched.push(route);
+			if (route.children) {
+				this.match(route.children);
+			}
+			return;
+		}
+	}
+}
+</code></pre>
+<blockquote>
+<p>之所以用数组来存储匹配的路由，是因为嵌套路由的存在</p>
+</blockquote>
+</li>
+<li>
+<p>同样是嵌套路由的关系，我们需要一个 depth 变量，来帮助我们找到对应的子路由</p>
+<pre><code class="language-js">export default {
+	render () {
+		// 标记该组件是否为 Router View 组件
+		this.$vode.data.routerView = true
+
+		let depth = 0;
+		
+		const parent = this.$parent;
+		while(parent) {
+			const vnodeData = parent.$vnode &amp;&amp; parent.$vnode.data;
+			if (vnodeData &amp;&amp; vnodeData.routerView) {
+				depth++
+			}
+			parent = parent.$parent;
+		}
+
+		let component = null;
+		const route = this.$router.matched[depth];
+	
+		if (route) {
+			component = route.component;
+		}
+
+		return h(component);
+	}		
+}
+</code></pre>
+</li>
+<li>
+<p>如果 match 有了变化，我们就通知视图重新渲染，这就需要 match 是一个响应式数据</p>
+<pre><code>// VueRouter.js
+Vue.until.defineReactive(this, 'matched', []);
+</code></pre>
+</li>
+</ul>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-24-set-map">
+              <h3 class="post-title">
+                下一篇：Set、Map、WeakSet 和 WeakMap
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
