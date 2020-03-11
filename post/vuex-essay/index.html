@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Vuex Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">Vuex Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-11</span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<ul>
+<li>
+<p>vuex <strong>集中式</strong>存储管理应用的所有组件的状态，并以相应的规则保证状态以<strong>可预测</strong>的方式发生变化。</p>
+<blockquote>
+<p>vuex 与 vue-router 因为都采用 vue 的响应式机制来实现了对应 view 层的更新，所以两个都依赖 vue 才能使用</p>
+</blockquote>
+</li>
+<li>
+<p>核心概念</p>
+<ul>
+<li>state 状态数据</li>
+<li>mutations 更改状态的函数，commit 触发</li>
+<li>actions 异步操作，dispatch 触发</li>
+<li>store 包含以上概念的容器</li>
+</ul>
+</li>
+</ul>
+<h3 id="插件机制">插件机制</h3>
+<ul>
+<li>
+<p>这个之前 vue-router 写过，直接上代码</p>
+<pre><code class="language-js">const install = (_vue) =&gt; {
+	let vue = _vue;
+
+	vue.mixin({
+		beforeCreate() {
+			if (this.$options.store) {
+				vue.prototype.$store = this.$options.store;
+			}
+		}
+	});
+}
+
+if (type window === 'object' &amp;&amp; window.vue) {
+	install(window.vue);
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="state">state</h3>
+<ul>
+<li>
+<p>使用</p>
+<pre><code class="language-js">// store.js
+export default new Vuex.store({
+	state: {counter: 0}
+});
+
+// page.vue
+console.log(this.$store.state.counter)
+</code></pre>
+</li>
+<li>
+<p>实现</p>
+<pre><code class="language-js">class Store {
+	constructor(options = {}){
+		this._vm = new Vue({
+			data: {
+				$$state: options.state
+			}
+		});
+	}
+
+	get state() {
+		return this._vm._data.$$state
+	}
+
+	set state(v) {
+		console.error('you can not set state immediately');
+	}
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="mutations">mutations</h3>
+<ul>
+<li>
+<p>使用</p>
+<pre><code class="language-js">export default new vuex.store({
+	mutations: {
+		add(state,payload) {
+			state.counter ++
+		}
+	}
+});
+</code></pre>
+</li>
+<li>
+<p>实现</p>
+<pre><code class="language-js">class Store {
+	constructor(options = {}) {
+		this._mutations = options.mutations || {};
+	}
+
+	commit(type, payload) {
+		const entry = this._mutations[type];
+
+		if (!entry) {
+			console.error(`unknown mutation type: ${type}`);
+			return ;
+		}
+
+		entry(this.state, payload);
+	}
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="actions">actions</h3>
+<ul>
+<li>
+<p>使用</p>
+<pre><code class="language-js">export default new vuex.Store({
+	actions: {
+		add({commit}, payload) {
+			setTimeout(()=&gt; {
+				commit('add');
+			}, 1000);
+		}
+	}
+});
+</code></pre>
+</li>
+<li>
+<p>实现</p>
+<pre><code class="language-js">class Store {
+	constructor(options = {}) {
+		this._actions = options.actions || {}
+
+		this.commit = this.commit.bind(this);
+		this.action = this.action.bind(this);
+	}
+
+	dispatch(type, payload) {
+		const entry = this._actions[type];
+
+		if (!entry) {
+			console.error(`unknown action type: ${type}`);
+			return ;
+		}
+
+		return entry(this, payload);
+	}
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="getters">getters</h3>
+<ul>
+<li>
+<p>使用</p>
+<pre><code class="language-js">export default new vuex.Store({
+	getters: {
+		doubleCounter(state) {
+			return state.counter * 2;
+		}
+	}
+});
+</code></pre>
+</li>
+<li>
+<p>实现</p>
+<pre><code class="language-js">class Store {
+	constructor(options = {}) {
+		const _getters = options.getters || {}
+		this._vm = new vue({
+			computed: _getters
+		});
+
+		for(key in _getters) {
+			Object.defineProperty(this.getters, key, {
+				get: () =&gt; this._vm[key],
+				enumerable: true // for local getters
+			})
+		}
+	}
+}
+</code></pre>
+</li>
+</ul>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-25-hand-promise">
+              <h3 class="post-title">
+                下一篇：手写一个 promise
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
