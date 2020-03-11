@@ -1,0 +1,435 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>React-redux Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">React-redux Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-10</span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<p>React-redux 是 React 的状态应用，可以保证数据的一致性且易于追溯和测试。关于 React-redux，前置知识有：</p>
+<ul>
+<li>context</li>
+<li>redux</li>
+</ul>
+<p>接着才是主菜</p>
+<ul>
+<li>react-redux</li>
+</ul>
+<h3 id="context">Context</h3>
+<p>这里的 Context 指的是 React 的上下文，属于 React 的高级部分，虽然官方认为一个稳定的 React 应用不应该使用 Context，但是许多的优秀的 React 库都使用了 Context，比如 React-router 以及 React-redux。</p>
+<p>Context 的 API 有三个 (hooks 相关的这里不做讨论)</p>
+<ul>
+<li>
+<p>CreateContext （可以理解为种菜的）</p>
+<pre><code class="language-js">// 参数可以接收初始值
+const UserContext = React.CreateContext({name: &quot;potter&quot;});
+</code></pre>
+</li>
+<li>
+<p>Provider （可以理解为收菜的供货商）</p>
+<pre><code class="language-js">const UserProvider = UserContext.Provider;
+</code></pre>
+<p>使用方式：</p>
+<pre><code class="language-jsx">render() {
+	return &lt;UserProvider&gt;&lt;/UserProvider&gt;
+}
+</code></pre>
+</li>
+<li>
+<p>Cosumer （可以理解为消费者）</p>
+<pre><code class="language-js">const UserCosumer = UserContext.Cosumer;
+</code></pre>
+<p>使用方式：</p>
+<pre><code class="language-jsx">render() {
+	return &lt;UserCosumer&gt;{
+		context =&gt; {}
+	}&lt;/UserCosumer&gt;
+}
+</code></pre>
+<p>这里接收 Context 还有另外一种方式，即在 Class 组件中</p>
+<pre><code class="language-js">// 这种接收方式只能获取单一 Context，通过 this.context 获取传递内容
+Class User extend Component {
+	static contextType = UserContext
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="redux">Redux</h3>
+<p>Redux 是 Js 应用的状态容器。</p>
+<ul>
+<li>
+<p>使用方式</p>
+<p>redux 在使用时，大概分为以下几步：</p>
+<ul>
+<li>reducer 纯函数制定修改规则</li>
+<li>createStore 创建 store</li>
+<li>store.getState 得到数据</li>
+<li>store.dispatch 更改数据</li>
+<li>store.subscribe 订阅数据改动</li>
+</ul>
+</li>
+<li>
+<p>实现</p>
+<ul>
+<li>redux 的实现主要考虑的是 createStore ， 返回的 store 中包含剩下的 getState，dispath 与 subscribe。</li>
+</ul>
+<pre><code class="language-js">const createStore = (reducer, enhancer) =&gt; {
+	
+	if(enhancer) { // 这里是判断是否有 redux 中间件，如果有，将 createStore 与 reducer 传入
+		return enhancer(createStore)(reducer)
+	}
+	
+	let currentState;
+	let currentListener = [];
+	
+	function getStore() {
+		return currentState;
+	}
+	
+	function  dispatch(action) {
+		const currentState = reducer(currentState, action);
+		currentListener.forEach( v=&gt; v());
+	}
+	
+	function subscribe(v) {
+		currentListener.push(v);
+	}
+	
+	// 处理初始值的情况
+	dispatch({type: '@@INIT'});
+	
+	return {
+		getState,
+		dispatch,
+		subscribe
+	}
+}
+</code></pre>
+<ul>
+<li>
+<p>redux 只是一个纯粹的状态管理器，默认只支持同步，我们需要通过中间件来支持异步。</p>
+<p>这里我们需要做两件事：</p>
+<ul>
+<li>createStore 增加 enhancer 参数，增加 applyMiddleware 函数</li>
+</ul>
+<pre><code class="language-js">const applyMiddleware = (...middlewares) =&gt; {
+	return createStore =&gt; （...args）=&gt; {
+		const store = createStore(...args);
+		const middleApi = {
+			getState: store.getState,
+			dispatch: store.dispatch
+		};
+		const middlewaresChain = middlewares.map(middleware =&gt; middleware(middleApi))
+		
+		let dispatch = compose(middlewaresChain)(store.dispatch);
+		
+		return {
+			...store,
+			dispatch
+		}
+	}
+}
+</code></pre>
+<p>这里面还涉及到一个 compose 函数</p>
+<pre><code class="language-js">const compose = (...funs) =&gt; {
+	if (funs.length === 0) {
+		return arg =&gt; arg;
+	}
+	if (funs.length === 1) {
+		return funs[0];
+	}
+	
+	return funs.reduce((a,b) =&gt; (...args) =&gt; a(b(...args)));
+}
+</code></pre>
+<ul>
+<li>外部其他库实现 redux-thunk ， redux-logger 等中间件</li>
+</ul>
+<pre><code class="language-js">// redux-thunk
+function thunk({dispatch, getState}) {
+	return dispatch  =&gt; action =&gt; {
+		if (typeof action === &quot;function&quot;) {
+			return action(dispatch, getState);
+		} else {
+			return dispatch(action)
+		}
+	}
+}
+
+// redux-logger
+function logger() {
+	return dispath =&gt; action =&gt; {
+		console.log(action.type + '执行了');
+		return dispatch(action);
+	}
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="react-redux">react-redux</h3>
+<ul>
+<li>
+<p>出现原因</p>
+<p>Redux 和 React 一起用的时候有两个不太完美的地方</p>
+<ul>
+<li>store 每个组件都需要引入</li>
+<li>每次都需要调用订阅函数，在里面触发 render</li>
+</ul>
+</li>
+</ul>
+<p>React-redux 帮助我们解决了这两个痛点，提供了两个 API</p>
+<pre><code>* Provider 为后代组件提供 store
+* connect 为组件提供数据和变更方法
+</code></pre>
+<ul>
+<li>
+<p>使用</p>
+<ul>
+<li>Provider</li>
+</ul>
+<pre><code class="language-js">//一般放在根组件外层，方便后代组件调用
+ReactDOM.render(
+&lt;Provider store={store}&gt;
+	&lt;App/&gt;
+&lt;/Provider&gt;,
+document.getElementById('root')
+);
+</code></pre>
+<ul>
+<li>connect</li>
+</ul>
+<pre><code class="language-js">export default connect(
+	// mapStateToProps Function (state, ownProps)
+	// ! ownProps 需要谨慎使用，如果它发生变化，mapStateToProps 就会执行，里面的 state 会被重新计算
+	// ! 容易影响性能
+	state =&gt; ({num: state.num}),
+	
+	// mapDispatchToProps Object/Function/undefined 
+	// ! 如果不定义，默认把 dispatch 注入组件
+	// ! 如果是对象的话，原版的 dispatch 就没有被注入了
+	{
+		add: () =&gt; ({type: 'ADD'})
+	},
+	// ! 如果是Function (dispatch, ownProps) 的话，同样谨慎使用 ownProps
+	(dispatch) =&gt; {
+		let res = {add: ()=&gt; ({type: 'ADD'}), minus: ()=&gt; ({type: 'MINUS'})};
+		
+		// bindActionCreators 可以帮助我们用 dispatch 对 action creator 进行包装
+		res = bindActionCreators(res, dispatch);
+		
+		return {dispatch, ...res}
+	}
+	
+	// mergeProps Function (mapStateToProps, mapDispatchToProps, ownProps)
+	// ! mapStateToProps, mapDispatchToProps 的执行结果，以及组件自身的 prop 都将作为参数传入这个函数
+	(mapStateToProps,mapDispatchToProps,ownProps) =&gt; {
+		return {omg:&quot;omg&quot;,...mapStateToProps,...mapDispatchToProps,...ownProps}
+	}
+	
+)(&lt;SomePage&gt;&lt;/SomePage&gt;);
+</code></pre>
+</li>
+<li>
+<p>实现</p>
+<ul>
+<li>Provider</li>
+</ul>
+<pre><code class="language-js">class Provider extends Component {
+	render () {
+		return &lt;ValueContext.Provider value={this.props.store}&gt;{this.props.children}&lt;/ValueContext.Provider&gt;
+	}
+}
+</code></pre>
+<ul>
+<li>connect</li>
+</ul>
+<pre><code class="language-js">const connect = (mapStateToProps = state =&gt;state , mapDispatchToProps) =&gt; WrappedComponent =&gt; {
+	return class extends Component {
+		static contextType = ValueContext;
+		constructor(props) {
+			super(props);
+			this.state = {
+				props: {}
+			}
+		}
+		
+		componentDidMount() {
+			this.update();
+			const {subscribe} = this.context;
+			subscribe(() =&gt; {
+				this.update();
+			});
+		}
+		
+		update() {
+			const {getState, dispatch} = this.context;
+			
+			const stateProps = mapStateToProps(getState());
+			let dispatchProps;
+			if (typeof mapDispatchToProps === 'object') {
+				dispatchProps = bindActionCreators(mapDispatchToProps, dispatch);
+			}else if (typeof mapDispatchToProps === 'function') {
+				dispatchProps = mapDispatchToProps(dispatch, this.props);
+			}else {
+				dispatchProps = {dispatch};
+			}
+			
+			this.setState({
+				props: {
+					...stateProps,
+					...dispatchProps
+				}
+			});
+		}
+
+		return &lt;WrappedComponent {...this.props} {...this.state.props}&gt;&lt;/WrappedComponent&gt;
+	}
+}
+</code></pre>
+<ul>
+<li>
+<p>bindActionCreators</p>
+<pre><code class="language-js"></code></pre>
+</li>
+</ul>
+<p>const bindActionCreator = (creator, dispatch) =&gt; {
+return (...args) =&gt; dispatch(creator(...args));
+}</p>
+<p>const bindActionCreators = (creators, dispatch) =&gt; {
+const obj = {};
+for(const key in creators){
+obj[key] = bindActionCreator(creators[key], dispatch)
+}
+return obj;
+}</p>
+<pre><code>
+
+
+
+
+
+
+</code></pre>
+</li>
+</ul>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-25-hand-promise">
+              <h3 class="post-title">
+                下一篇：手写一个 promise
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
