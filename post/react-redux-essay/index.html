@@ -184,7 +184,7 @@ Class User extend Component {
 </code></pre>
 <ul>
 <li>
-<p>redux 只是一个纯粹的状态管理器，默认只支持同步，我们需要通过中间件来支持异步。</p>
+<p>redux 只是一个纯粹的状态管理器，默认只支持同步，我们需要通过中间件来支持异步。所有的中间件都是一个函数，通过对 dispatch 的改造，在 action 与 reducer 之间，添加了其他的功能。</p>
 <p>这里我们需要做两件事：</p>
 <ul>
 <li>createStore 增加 enhancer 参数，增加 applyMiddleware 函数</li>
