@@ -254,13 +254,12 @@ function logger() {
 <li>store 每个组件都需要引入</li>
 <li>每次都需要调用订阅函数，在里面触发 render</li>
 </ul>
-</li>
-</ul>
 <p>React-redux 帮助我们解决了这两个痛点，提供了两个 API</p>
-<pre><code>* Provider 为后代组件提供 store
-* connect 为组件提供数据和变更方法
-</code></pre>
 <ul>
+<li>Provider 为后代组件提供 store</li>
+<li>connect 为组件提供数据和变更方法</li>
+</ul>
+</li>
 <li>
 <p>使用</p>
 <ul>
@@ -368,19 +367,20 @@ document.getElementById('root')
 <ul>
 <li>
 <p>bindActionCreators</p>
-<pre><code class="language-js"></code></pre>
+<pre><code class="language-js">const bindActionCreator = (creator, dispatch) =&gt; {
+	return (...args) =&gt; dispatch(creator(...args));
+}
+
+const bindActionCreators = (creators, dispatch) =&gt; {
+	const obj = {};
+	for(const key in creators){
+		obj[key] = bindActionCreator(creators[key], dispatch)
+	}
+	return obj;
+}
+</code></pre>
 </li>
 </ul>
-<p>const bindActionCreator = (creator, dispatch) =&gt; {
-return (...args) =&gt; dispatch(creator(...args));
-}</p>
-<p>const bindActionCreators = (creators, dispatch) =&gt; {
-const obj = {};
-for(const key in creators){
-obj[key] = bindActionCreator(creators[key], dispatch)
-}
-return obj;
-}</p>
 <pre><code>
 
 
