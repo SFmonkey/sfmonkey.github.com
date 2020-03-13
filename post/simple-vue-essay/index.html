@@ -1,0 +1,430 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Simple Vue Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">Simple Vue Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-13</span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<p>在实现 Vue 之前，我们先要清楚 Vue 的概念，真正的知道它是什么，然后才能知道怎么去实现。</p>
+<ul>
+<li>
+<p>Vue 是一套用于构建用户界面（UI）的渐进式框架，它的核心库只关注视图层。</p>
+</li>
+<li>
+<p>Vue 是一个 MVVM 框架。</p>
+<p>实现 MVVM 主要有三个核心点：</p>
+<ul>
+<li>
+<p>数据响应式：监听数据变化并在视图中更新</p>
+<ul>
+<li>
+<p>Object.defineProperty()</p>
+</li>
+<li>
+<p>Proxy</p>
+</li>
+</ul>
+</li>
+<li>
+<p>模版引擎：提供描述视图的模版语法</p>
+<ul>
+<li>
+<p>插值：{{}}</p>
+</li>
+<li>
+<p>指令：v-bind，v-on，v-model，v-for，v-if</p>
+</li>
+</ul>
+</li>
+<li>
+<p>模版渲染：如何将模版转换为 html</p>
+<ul>
+<li>模版 -&gt; vdom -&gt; dom</li>
+</ul>
+</li>
+</ul>
+<p>所以，如果我们去实现，可以从 MVVM 结构，三个核心点去着力实现。</p>
+</li>
+</ul>
+<h3 id="数据响应式">数据响应式</h3>
+<p>这里我们只讲 defineProperty 实现的数据响应式。</p>
+<ul>
+<li>
+<p>首先我们需要一个函数，去帮助我们给数据赋予响应式的能力</p>
+<pre><code class="language-js">function defineReactive(obj,key,val) {
+	Object.defineProperty(obj, key, {
+		get() {
+			console.log(`get ${key}:${val}`);
+			return val;
+		},
+		set(newVal) {
+			if (newVal !== val) {
+				console.log(`set ${key}:${newVal}`);
+				val = newVal;
+			}
+		}
+	});
+}
+</code></pre>
+</li>
+<li>
+<p>当我们结合视图时，我们就需要一个更新函数了</p>
+<pre><code class="language-html">&lt;html&gt;
+	&lt;head&gt;&lt;/head&gt;
+	&lt;body&gt;
+		&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+		&lt;script&gt;
+				function defineReactive(obj,key,val) {
+					Object.defineProperty(obj, key, {
+						get() {
+							console.log(`get ${key}:${val}`);
+							return val;
+						},
+						set(newVal) {
+							if (newVal !== val) {
+								console.log(`set ${key}:${newVal}`);
+								val = newVal;
+								update();
+							}
+						}
+					});
+				}
+				
+				const obj = {};
+				defineReactive(obj, 'foo', '');
+				obj.foo = new Date().toLocaleTimeString();
+			
+				//! 更新函数
+				function update(val) {
+					app.innerText = obj.foo;
+				}
+			
+				setInterval(() =&gt; {
+					obj.foo = new Date().toLocaleTimeString();
+				}, 1000);
+		&lt;/script&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+<li>
+<p>当然，用户不可能只传入一个属性，我们需要对传入的数据进行遍历</p>
+<pre><code class="language-js">function observe(obj) {
+	// 当传入的数据不是对象或者为空时，返回
+	if (typeof obj !== 'object' || obj == null) {
+		return;
+	}
+	
+	Object.keys().forEach(key= &gt; defineReactive(obj, key, obj[key]));
+}
+
+function defineReactive(obj,key,val) {
+	observe(val); //! val 是对象的情况
+	Object.defineProperty(obj, key, {
+		get() {
+			console.log(`get ${key}:${val}`);
+			return val;
+		},
+		set(newVal) {
+			if (newVal !== val) {
+				console.log(`set ${key}:${newVal}`);
+				observe(newVal)//! 赋值是对象的情况
+				val = newVal;
+				update();
+			}
+		}
+	});
+}
+</code></pre>
+</li>
+<li>
+<p>还有一种情况，就是我们给对象添加新的属性,这时候，我们需要手动为其赋予响应式能力</p>
+<pre><code class="language-js">function set(obj, key, val) {
+	defineReactive(obj, key, val)
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="模版引擎以及渲染">模版引擎以及渲染</h3>
+<ul>
+<li>
+<p>这里我们不去考虑如何实现模版引擎，以及 模版-&gt; vnode -&gt; dom 的过程中 vnode 的部分，只考虑 模版 -&gt; dom。</p>
+<pre><code class="language-js">class Compile {
+	constructor(el, vm) {
+		this.$vm = vm;
+		this.$el = document.querySelector(el);
+
+		if (this.$el) {
+			this.compile(this.$el);
+		}
+	}
+
+	compile(el) {
+		const childNodes = el.childNodes;
+
+		Array.from(childNodes).forEach(node =&gt; {
+			if (this.isElement(node)) {
+				this.compileElement(node);
+			} else if (this.isInterpolation(node)) {
+				this.compileText(node);
+			}
+
+			if(node.childNodes &amp;&amp; node.childNodes.length &gt; 0) {
+				this.compile(node);
+			}
+		});
+	}
+}
+</code></pre>
+</li>
+<li>
+<p>关于 isElement，isInterpolation, compileElement, compileText 函数</p>
+<pre><code class="language-js">function isElement(node) {
+	return node.nodeType === 1;
+}
+
+function isInterpolation(node) {
+	return node.nodeType === 3 &amp;&amp; /\{\{(.*)\}\}/.test(node.textContent);
+}
+
+function compileElement(node) {
+	let nodeAttrs = node.attributes;
+	Array.from(nodeAttrs).forEach(attr =&gt; {
+		let name = attr.name;
+		let value = attr.value;
+		if (this.isDirective(name)) {
+			let dir = name.substring(2);
+			this[dir] &amp;&amp; this[dir](node, value)
+		}
+	});
+}
+
+function compileText(node) {
+	node.textContent = this.$vm[RegExp.$1]
+}
+
+function isDirective(attr) {
+	return attr.indexOf(&quot;k-&quot;) === 0
+}
+</code></pre>
+</li>
+<li>
+<p>当然，指令就很多，我们简单写两个</p>
+<pre><code class="language-js">function text(node, value) {
+	node.textContent = this.$vm[value];
+}
+function html(node, value) {
+	node.innerHTML = this.$vm[value];
+}
+</code></pre>
+</li>
+<li>
+<p>在 compile 的过程中，我们需要进行依赖收集，这里我们实现的是 Vue1.0 时候的依赖收集，一个依赖一个watcher，一个数据响应式的 Key 一个 Dep</p>
+<ul>
+<li>
+<p>watcher 类</p>
+<pre><code class="language-js">// watcher
+class watcher {
+	constructor(vm, key, updateFn) {
+		this.vm = vm;
+		this.key = key;
+		this.updateFn = updateFn;
+
+		// 订阅到 dep
+		Dep.target = this;
+		this.vm[this.key];
+		Dep.target = null;
+	}
+
+	update() {
+		this.updateFn.call(this.vm, this.vm[this.key]);
+	}
+}
+</code></pre>
+</li>
+<li>
+<p>在生成 dom 时订阅 watcher</p>
+<pre><code class="language-js">compileText(node) {
+	this.update(node, RegExp.$1, 'text');
+}
+
+update(node, exp, 'text') {
+	const fn = this[dir + 'Updater']
+	fn &amp;&amp; fn(node, this.vm[exp])
+
+	new watcher(this.vm, exp, function(val) {
+		fn &amp;&amp; fn(node, val)
+	})
+}
+</code></pre>
+</li>
+<li>
+<p>Dep 类</p>
+<pre><code class="language-js">//Dep
+class Dep {
+	constructor() {
+		this.deps = []
+	}
+
+	addDep(watcher) {
+		this.deps.push(watcher);
+	}
+
+	notify() {
+		this.deps.forEach(watcher =&gt; watcher.update());
+	}
+}
+</code></pre>
+</li>
+<li>
+<p>在数据响应式时，实例化 Dep</p>
+</li>
+</ul>
+<pre><code class="language-js">defineReactive() {
+	...
+	
+	const dep = new Dep();
+	
+	Object.defineProperty(obj, key, {
+		get() {
+			Dep.target &amp;&amp; dep.addDep(Dep.target);
+			return val;
+		},
+		set(newVal) {
+			if (newVal !== val) {
+				observe(newVal)//! 赋值是对象的情况
+				val = newVal;
+				dep.notify();
+			}
+		}
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="总结">总结</h3>
+<ol>
+<li>defineReactive 为每一个 key 创建一个 dep</li>
+<li>初始化视图的时候读取某个数据，创建一个watcher</li>
+<li>由于在watcher中读取了key，便将 watcher 订阅到了 dep 中</li>
+<li>当某个key更新时，触发setter，相关dep 通知所有watcher更新</li>
+</ol>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-29-bfs-dfs">
+              <h3 class="post-title">
+                下一篇：深度优先遍历和广度优先遍历
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
