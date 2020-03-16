@@ -381,10 +381,19 @@ class Dep {
 </ul>
 <h3 id="总结">总结</h3>
 <ol>
-<li>defineReactive 为每一个 key 创建一个 dep</li>
-<li>初始化视图的时候读取某个数据，创建一个watcher</li>
-<li>由于在watcher中读取了key，便将 watcher 订阅到了 dep 中</li>
-<li>当某个key更新时，触发setter，相关dep 通知所有watcher更新</li>
+<li>
+<p>defineReactive 为每一个 key 创建一个 dep</p>
+</li>
+<li>
+<p>初始化视图的时候读取某个数据，创建一个watcher</p>
+</li>
+<li>
+<p>由于在watcher中读取了key，便将 watcher 订阅到了 dep 中</p>
+</li>
+<li>
+<p>当某个key更新时，触发setter，相关dep 通知所有watcher更新</p>
+<p><img src="https://sfmonkey.github.io//post-images/1584324343056.jpg" alt=""></p>
+</li>
 </ol>
 
           </div>
