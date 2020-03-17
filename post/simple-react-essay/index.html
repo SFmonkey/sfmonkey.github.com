@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Simple React Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">Simple React Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-16</span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<p>和 Vue 一样，在实现 React 之前，我们需要弄清楚 React 到底是什么，这样才方便我们去实现它。</p>
+<ul>
+<li>
+<p>React 是用于构建用户界面的 JavaScript 库</p>
+</li>
+<li>
+<p>React 不是一个完整的 MVC 框架，最多可以认为是 MVC 中的 V（view）</p>
+</li>
+</ul>
+<p>所以我们实现 React 的时候，只需要关注 React 如何处理 UI 就可以了，也就是这三个 api</p>
+<ul>
+<li>
+<p>createElement</p>
+</li>
+<li>
+<p>render</p>
+</li>
+<li>
+<p>component</p>
+</li>
+</ul>
+<h3 id="createelement">createElement</h3>
+<ul>
+<li>
+<p>createElement 函数帮助我们生成 vnode（虚拟函数）</p>
+<pre><code class="language-js">// react.js
+function createElement(type, props, ...children) {
+	if (props) {
+		detele props.__source,
+		delete props.__self
+	}
+	
+	return {
+		type: type,
+		props: {
+			...props,
+			children: children.map(child =&gt; {
+				typeof child === 'object' ? child : createTextNode(child);
+			});
+		}
+	}
+}
+
+function createTextNode(text) {
+	return {
+		type: &quot;TEXT&quot;,
+		props: {
+			children: [],
+			nodeValue: text
+		}
+	}
+}
+
+export default {
+	createElement
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="render">render</h3>
+<ul>
+<li>
+<p>我们再使用 render 函数将 vnode 转换为 node</p>
+<pre><code class="language-js">// react-dom.js
+function render (vnode, container) {
+	const node = createNode(vnode);
+
+	container.appendChild(node);
+}
+
+function createNode(vnode) {
+	const {type, props} = vnode;
+	let node;
+
+	if (typeof type === 'function') {
+		node = type.isReactComponent ? updateClassComponent(vnode) : updateFunctionComponent(vnode)
+	} else if (type === 'TEXT') {
+		node = document.createTextNode(&quot;&quot;);
+	} else if (type) {
+		node = document.createElement(type);
+	} else {
+		node = document.createDocumentFragment();
+	}
+	updateNode(node, props);
+	reconcilerChildren(props.children, node);
+
+	return node;
+}
+
+function updateNode(node, props) {
+	Object.keys(props)
+		.filter(k =&gt; k !== 'children')
+		.forEach(k =&gt; {
+			if (k.slice(0,2) === 'on') {
+				let eventName = k.slice(0,2).toLocaleLowserCase();
+				node.addEventListener(eventName, props[K]);
+			} else {
+				node[k] = props[k];
+			}
+		});
+}
+
+function reconcilerChildren(children, node) {
+	for (let i =0; i &lt; children.length, i++) {
+		let child = children[i];
+
+		if (Array.isArray(child)) {
+			for (let i =0; i &lt; child.length, i++){
+				render(child[i], node);
+			}
+		} else {
+			render(child, node);
+		}
+	}
+}
+
+export default {
+	render
+}
+</code></pre>
+</li>
+<li>
+<p>需要对 type 类型进行判断，根据不同的 type 创建不同的元素，比较特殊的是函数组件和 Class 组件</p>
+<pre><code class="language-js">function updateClassComponent(vnode) {
+	const {type, props} = vnode;
+	const cmp = new type(props);
+	const vvnode = cmp.render();
+	const node = createNode(vvnode);
+
+	return node;
+}
+
+function updateFunctionComponent(vnode) {
+	const {type, props} = vnode;
+	const vvnode = type(props);
+	const node = createNode(vvnode);
+
+	return node;
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="component">component</h3>
+<ul>
+<li>
+<p>上面用到的 isReactComponent 属性就是在 Component 中定义的</p>
+<pre><code class="language-js">export default class Component {
+	static isReactComponent  = {};
+	constructor(props) {
+		this.props = props;
+	}
+}
+</code></pre>
+</li>
+<li>
+<p>其实，如果用上面的方式实现一个时钟，我们只能每次都删除原来的所有节点并重新创建</p>
+<pre><code class="language-js">const rootDom = document.getElementById(&quot;root&quot;);
+
+function tick() {
+	const time = new Date().toLocaleTimeString();
+	const clockElement = &lt;h1&gt;{time}&lt;/h1&gt;;
+	render(clockElement, rootDom);
+}
+
+tick();
+setInterval(tick, 1000);
+</code></pre>
+<p>很明显的，这个在性能上是不可接受的，所以我们需要 diff 算法，这个不在本文讨论。</p>
+</li>
+</ul>
+<h3 id="总结">总结</h3>
+<ol>
+<li>babel 将 jsx 转换为 cleateElement</li>
+<li>cleateElement 函数得到 vnode</li>
+<li>render 函数将 vnode 转换为 node</li>
+</ol>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-29-bfs-dfs">
+              <h3 class="post-title">
+                下一篇：深度优先遍历和广度优先遍历
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
