@@ -221,59 +221,54 @@ if (isUndef(vnode.text)) {
 <ul>
 <li>
 <p>updateChildren 用于判断新老节点的子节点</p>
-<pre><code class="language-js"></code></pre>
-</li>
-</ul>
-<p>while (oldStartIdx &lt;= oldEndIdx &amp;&amp; newStartIdx &lt;= newEndIdx) {
-if (isUndef(oldStartVnode)) {
-oldStartVnode = oldCh[++oldStartIdx] // Vnode has been moved left
-} else if (isUndef(oldEndVnode)) {
-oldEndVnode = oldCh[--oldEndIdx]
-} else if (sameVnode(oldStartVnode, newStartVnode)) {
-patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
-oldStartVnode = oldCh[++oldStartIdx]
-newStartVnode = newCh[++newStartIdx]
-} else if (sameVnode(oldEndVnode, newEndVnode)) {
-patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
-oldEndVnode = oldCh[--oldEndIdx]
-newEndVnode = newCh[--newEndIdx]
-} else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
-patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
-canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))
-oldStartVnode = oldCh[++oldStartIdx]
-newEndVnode = newCh[--newEndIdx]
-} else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
-patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
-canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)
-oldEndVnode = oldCh[--oldEndIdx]
-newStartVnode = newCh[++newStartIdx]
-} else {
-if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
-idxInOld = isDef(newStartVnode.key)
-? oldKeyToIdx[newStartVnode.key]
-: findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)
-if (isUndef(idxInOld)) { // New element
-createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
-} else {
-vnodeToMove = oldCh[idxInOld]
-if (sameVnode(vnodeToMove, newStartVnode)) {
-patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
-oldCh[idxInOld] = undefined
-canMove &amp;&amp; nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)
-} else {
-// same key but different element. treat as new element
-createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+<pre><code class="language-js">while (oldStartIdx &lt;= oldEndIdx &amp;&amp; newStartIdx &lt;= newEndIdx) {
+	if (isUndef(oldStartVnode)) {
+		oldStartVnode = oldCh[++oldStartIdx] // Vnode has been moved left
+	} else if (isUndef(oldEndVnode)) {
+		oldEndVnode = oldCh[--oldEndIdx]
+	} else if (sameVnode(oldStartVnode, newStartVnode)) {
+		patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+		oldStartVnode = oldCh[++oldStartIdx]
+		newStartVnode = newCh[++newStartIdx]
+	} else if (sameVnode(oldEndVnode, newEndVnode)) {
+		patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+		oldEndVnode = oldCh[--oldEndIdx]
+		newEndVnode = newCh[--newEndIdx]
+	} else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
+		patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+		canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))
+		oldStartVnode = oldCh[++oldStartIdx]
+		newEndVnode = newCh[--newEndIdx]
+	} else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
+		patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+		canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)
+		oldEndVnode = oldCh[--oldEndIdx]
+		newStartVnode = newCh[++newStartIdx]
+	} else {
+		if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
+		idxInOld = isDef(newStartVnode.key)
+			? oldKeyToIdx[newStartVnode.key]
+			: findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)
+		if (isUndef(idxInOld)) { // New element
+			createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+		} else {
+			vnodeToMove = oldCh[idxInOld]
+			if (sameVnode(vnodeToMove, newStartVnode)) {
+				patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+				oldCh[idxInOld] = undefined
+				canMove &amp;&amp; nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)
+			} else {
+				// same key but different element. treat as new element
+				createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+			}
+		}
+		newStartVnode = newCh[++newStartIdx]
+	}
 }
-}
-newStartVnode = newCh[++newStartIdx]
-}
-}
-```</p>
-<pre><code>这里的逻辑稍微有点复杂，在 oldCh 和 ch 中，提供四个指针
-
-![](https://sfmonkey.github.io//post-images/1584511735002.jpeg)
 </code></pre>
-<ul>
+<p>这里的逻辑稍微有点复杂，在 oldCh 和 ch 中，提供四个指针</p>
+<p><img src="https://sfmonkey.github.io//post-images/1584511735002.jpeg" alt=""></p>
+</li>
 <li>
 <p>oldCh 和 ch 指针两两进行 sameVnode 比较，共分四种情况</p>
 <ul>
