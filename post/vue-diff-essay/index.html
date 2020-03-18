@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Vue diff Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">Vue diff Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-18</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://sfmonkey.github.io//tag/V8_eyJVRg">
+                    Vue
+                    
+                      ，
+                    
+                  </a>
+                
+                  <a href="https://sfmonkey.github.io//tag/yldW1tuxF">
+                    Essay
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<p>在之前实现的 Simple Vue 里，我们在模版的 compile 依赖收集时将每个依赖都创建了一个watcher（Vue 1.0），这样是没法撑住大应用的，所以在 2.0 里面每一个组件创建一个 watcher，但问题是这种粒度下我们无法判断组件中那些元素进行了更改，<strong>这时候，我们就需要虚拟DOM了</strong>。</p>
+<p>那么有了虚拟DOM后，我们如何进行高效的 DOM 更新呢，<strong>这时候 diff 算法就出现了</strong>。</p>
+<p>为了方便我们随时清楚自己在diff算法的哪个流程，我们附上下图</p>
+<p><img src="https://sfmonkey.github.io//post-images/1584501228011.jpeg" alt=""></p>
+<p>我们来根据这张图，逐步理解 diff 算法</p>
+<h3 id="patch">patch</h3>
+<ul>
+<li>
+<p>patch 主要接收两个参数， oldVnode 和 Vnode。<strong>因为有较多情况存在直接创建新树的情况，一般也可以理解为 patch 进行的是树级别的比较。</strong></p>
+<pre><code class="language-js">function patch() {
+	if (isUndef(oldVnode)) {
+			// empty mount (likely as component), create new root element
+			isInitialPatch = true
+			createElm(vnode, insertedVnodeQueue)
+	} else {
+		if (sameVnode(oldVnode, vnode)) {
+			patchVnode(oldVnode, vnode)
+		} else {
+			...
+			// create new node
+			createElm(
+				vnode,
+				nodeOps.nextSibling(oldElm)
+			)
+		}
+	}
+	
+	...
+	removeVnodes([oldVnode], 0, 0)
+}
+</code></pre>
+<ol>
+<li>如果 oldVnode 不存在，则直接根据 vnode 创建 DOM</li>
+<li>如果 oldVnode 与 vnode 不属于 sameVnode，这直接替换,属于 replace 操作</li>
+<li>如果属于 sameVnode，那么开始进行节点比较 patchVnode</li>
+</ol>
+</li>
+</ul>
+<h3 id="samevnode">sameVnode</h3>
+<ul>
+<li>
+<p>sameVnode 用来判断是否属于相同的节点，其实如果 key，tag，isComment，isDef(data) ，sameInputType相同，就是相同的节点。可以进行 patchVnode 了。</p>
+<pre><code class="language-js">functon sameVnode(a，b) {
+		return (
+		a.key === b.key &amp;&amp; (
+			(
+				a.tag === b.tag &amp;&amp;
+				a.isComment === b.isComment &amp;&amp;
+				isDef(a.data) === isDef(b.data) &amp;&amp;
+				sameInputType(a, b)
+			)
+			...
+	)
+}
+</code></pre>
+<ol>
+<li>key：key值</li>
+<li>tag：标签名</li>
+<li>isComment 是否为注释节点</li>
+<li>isDef(data)：是否定义了 data</li>
+<li>sameInputType：当标签是 input 的时候，type 必须相同</li>
+</ol>
+</li>
+</ul>
+<h3 id="patchvnode">patchVnode</h3>
+<ul>
+<li>
+<p>patchVnode 用于进行两个相同节点的比较,然后进行相关DOM操作，操作的类型有三种</p>
+<ul>
+<li>属性更新
+<ul>
+<li>当 data 有定义时，需要进行属性的更新</li>
+</ul>
+</li>
+<li>文本更新
+<ul>
+<li>当新老节点都无子节点的时候，只是文本的替换</li>
+</ul>
+</li>
+<li>子节点更新
+<ul>
+<li>如果老节点没有子节点而新节点有子节点，先清空DOM的文本内容，然后为 DOM 新增子节点</li>
+<li>如果新节点没有子节点而老节点有子节点，则移除DOM的所有子节点（在外层已经判断新节点没有文本了）</li>
+<li>如果新老节点都存在 children 子节点，则调用 updateChildren，对子节点进行 diff 操作</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js">function patchVnode(odlVnode， vnode) {
+	...
+
+const oldCh = oldVnode.children
+const ch = vnode.children
+
+if (isDef(data) &amp;&amp; isPatchable(vnode)) {
+	for (i = 0; i &lt; cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
+	if (isDef(i = data.hook) &amp;&amp; isDef(i = i.update)) i(oldVnode, vnode)
+}
+
+if (isUndef(vnode.text)) {
+	if (isDef(oldCh) &amp;&amp; isDef(ch)) {
+		if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)
+	} else if (isDef(ch)) {
+		if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '')
+		addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue)
+	} else if (isDef(oldCh)) {
+		removeVnodes(oldCh, 0, oldCh.length - 1)
+	} else if (isDef(oldVnode.text)) {
+		nodeOps.setTextContent(elm, '')
+	}
+} else if (oldVnode.text !== vnode.text) {
+	nodeOps.setTextContent(elm, vnode.text)
+}
+	...
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="updatechildren">updateChildren</h3>
+<ul>
+<li>
+<p>updateChildren 用于判断新老节点的子节点</p>
+<pre><code class="language-js"></code></pre>
+</li>
+</ul>
+<p>while (oldStartIdx &lt;= oldEndIdx &amp;&amp; newStartIdx &lt;= newEndIdx) {
+if (isUndef(oldStartVnode)) {
+oldStartVnode = oldCh[++oldStartIdx] // Vnode has been moved left
+} else if (isUndef(oldEndVnode)) {
+oldEndVnode = oldCh[--oldEndIdx]
+} else if (sameVnode(oldStartVnode, newStartVnode)) {
+patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+oldStartVnode = oldCh[++oldStartIdx]
+newStartVnode = newCh[++newStartIdx]
+} else if (sameVnode(oldEndVnode, newEndVnode)) {
+patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+oldEndVnode = oldCh[--oldEndIdx]
+newEndVnode = newCh[--newEndIdx]
+} else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
+patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))
+oldStartVnode = oldCh[++oldStartIdx]
+newEndVnode = newCh[--newEndIdx]
+} else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
+patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)
+oldEndVnode = oldCh[--oldEndIdx]
+newStartVnode = newCh[++newStartIdx]
+} else {
+if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
+idxInOld = isDef(newStartVnode.key)
+? oldKeyToIdx[newStartVnode.key]
+: findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)
+if (isUndef(idxInOld)) { // New element
+createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+} else {
+vnodeToMove = oldCh[idxInOld]
+if (sameVnode(vnodeToMove, newStartVnode)) {
+patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+oldCh[idxInOld] = undefined
+canMove &amp;&amp; nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)
+} else {
+// same key but different element. treat as new element
+createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+}
+}
+newStartVnode = newCh[++newStartIdx]
+}
+}
+```</p>
+<pre><code>这里的逻辑稍微有点复杂，在 oldCh 和 ch 中，提供四个指针
+
+![](https://sfmonkey.github.io//post-images/1584511735002.jpeg)
+</code></pre>
+<ul>
+<li>
+<p>oldCh 和 ch 指针两两进行 sameVnode 比较，共分四种情况</p>
+<ul>
+<li>oldS 和 S 匹配，那么两者进行 patchVnode，匹配上的两个指针向中间移动</li>
+<li>oldE 和 E 匹配，那么两者进行 patchVnode，匹配上的两个指针向中间移动</li>
+<li>oldS 和 E 匹配，那么两者进行 patchVnode，匹配上的两个指针向中间移动，真实 DOM 中的第一个节点会移动到最后</li>
+<li>oldE 和 S 匹配，那么两者进行 patchVnode，匹配上的两个指针向中间移动，真实 DOM 中的最后一个节点会移动到最前</li>
+</ul>
+</li>
+<li>
+<p>如果四种匹配都没有成功，则又分为两种情况</p>
+<ul>
+<li>如果新旧节点都存在key，那么会根据 oldCh 的key 生成一张 hash表，用S的key与 hash匹配，如果匹配成功就判断 S 和匹配节点是否是 sameNode，如果是，就进行 patchVnode，将 DOM 放在 oldS 前面，然后移动 S，否则剩下情况就创建新的 DOM，插入 oldS 的位置，然后 S 指针向中间移动。</li>
+<li>如果没有key，则直接创建新DOM 插入 oldS 位置</li>
+</ul>
+</li>
+<li>
+<p>当然，在最后，结束条件即 oldS &gt; oldE 或者 S &gt; E 后</p>
+<pre><code class="language-js">if (oldStartIdx &gt; oldEndIdx) {
+	refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm
+	addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)
+} else if (newStartIdx &gt; newEndIdx) {
+	removeVnodes(oldCh, oldStartIdx, oldEndIdx)
+}
+</code></pre>
+<ul>
+<li>如果 oldStartIdx &gt; oldEndIdx ，那么将 S 与 E 及两者之间的进行 DOM 新增</li>
+<li>如果 newStartIdx &gt; newEndIdx ，那么将 oldS 与 oldE 及两者之间的进行 DOM 删除</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考资料">参考资料</h3>
+<p><a href="https://juejin.im/post/5affd01551882542c83301da#heading-6">详解vue的diff算法</a></p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/simple-react-essay">
+              <h3 class="post-title">
+                下一篇：Simple React Essay
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

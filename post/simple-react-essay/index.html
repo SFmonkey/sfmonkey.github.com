@@ -194,7 +194,7 @@ function updateNode(node, props) {
 		.filter(k =&gt; k !== 'children')
 		.forEach(k =&gt; {
 			if (k.slice(0,2) === 'on') {
-				let eventName = k.slice(0,2).toLocaleLowserCase();
+				let eventName = k.slice(2).toLocaleLowserCase();
 				node.addEventListener(eventName, props[K]);
 			} else {
 				node[k] = props[k];
@@ -282,9 +282,9 @@ setInterval(tick, 1000);
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-29-bfs-dfs">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/simple-vue-essay">
               <h3 class="post-title">
-                下一篇：深度优先遍历和广度优先遍历
+                下一篇：Simple Vue Essay
               </h3>
             </a>
           </div>
