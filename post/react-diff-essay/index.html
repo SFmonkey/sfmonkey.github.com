@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>React diff Essay | 四辅的博客</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="shortcut icon" href="https://sfmonkey.github.io//favicon.ico">
+<link rel="stylesheet" href="https://sfmonkey.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://sfmonkey.github.io/">
+        <img class="avatar" src="https://sfmonkey.github.io//images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://sfmonkey.github.io/">
+        <h1 class="site-title">四辅的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          <h2 class="post-title">React diff Essay</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-03-19</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://sfmonkey.github.io//tag/t1GPgLh46">
+                    React
+                    
+                      ，
+                    
+                  </a>
+                
+                  <a href="https://sfmonkey.github.io//tag/yldW1tuxF">
+                    Essay
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="概要">概要</h3>
+<p>我们都知道，react 中是通过 setState 来触发组件 render 函数，得到虚拟 DOM，然后 oldVnode 与 vnode 进行 diff ，最后得到高效的 DOM 更新操作。</p>
+<p>在 React diff 中，更新策略有三点</p>
+<ol>
+<li>Web UI 中 DOM 节点跨层级的移动操作特别少，可以忽略不计</li>
+<li>拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构</li>
+<li>对于同一层级的一组子节点，他们可以通过唯一 id 进行区分</li>
+</ol>
+<p>基于这三个更新策略，我们可以得出 React diff 中三种不同的 diff 类型</p>
+<ol>
+<li>tree diff</li>
+<li>component diff</li>
+<li>element diff</li>
+</ol>
+<h3 id="tree-diff">tree diff</h3>
+<p>React 对🌲的算法进行了简洁明了的优化，即对树进行分层比较，两棵树只会对同一层次的节点进行比较。</p>
+<ul>
+<li>
+<p>首先我们来控制同层比较</p>
+<pre><code class="language-js">_updateChildren: function(      
+	nextNestedChildrenElements,
+	transaction,
+	context,
+) {
+	...
+	var nextChildren = this._reconcilerUpdateChildren(
+		prevChildren,
+		nextNestedChildrenElements,
+		mountImages,
+		removedNodes,
+		transaction,
+		context,
+	);
+}
+</code></pre>
+<p>prevChildren 和 nextChildren 就是对应的虚拟 DOM，nextNestedChildrenElements 这玩意儿是个指针，来标明当前树的层次，得到当前 prevChildren 的层次。</p>
+</li>
+<li>
+<p>然后 ReactChildReconciler.updateChildren 会将 prevChildren、nextChildren封装成ReactDOMComponent类型，并进行后续比较和操作。</p>
+</li>
+</ul>
+<p>所以当出现节点跨层级移动时，并不会出现想象中的移动操作，而是以 A 为根节点的树被整个重新创建，这是一种影响 React 性能的操作，因此 <strong>React 官方建议不压迫进行 DOM 节点跨层级的操作</strong></p>
+<p><img src="https://sfmonkey.github.io//post-images/1584599830004.jpeg" alt=""></p>
+<h3 id="component-diff">component diff</h3>
+<p>我们需要清楚的是，createElement 生成的虚拟 DOM，如果节点本身是组件，那么虚拟 DOM 中的 tag 其实就是对应的 class 或者 function，这个在之前我们实现 react 的时候就已经有体现了。当然这是 react 虚拟 DOM，在 vue 中 tag 不太一样，这是后话。</p>
+<ul>
+<li>
+<p>如果是同一类型的组件，按照原策略继续比较虚拟 DOM 树</p>
+</li>
+<li>
+<p>如果不是，则将该组件判断为 dirty component，从而替换整个组件下的所有子节点</p>
+</li>
+<li>
+<p>对于同一类型的组件，有可能其 Virtual DOM 没有任何变化，这是我们可以通过 shouldComponentUpdate 钩子来告诉该组件是否进行 diff，从而提高大量的性能。</p>
+<pre><code>// 超简单代码实现
+const compareTwoVnodes(oldVnode, newVnode, dom) {
+		let newNode = dom
+
+		// 如果新的虚拟DOM是null，那么就将前一次的真实DOM移除掉
+		if (newVnode == null) {
+				destroyVnode(oldVnode, dom)
+				dom.parentNode.removeChild(dom)
+
+		} else if (oldVnode.type !== newVnode.type || oldVnode.key !== newVnode.key) {
+				// replace
+				destroyVnode(oldVnode, dom)
+				newNode = initVnode(newVnode, parentContext, dom.namespaceURI)
+				dom.parentNode.replaceChild(newNode, dom)
+
+		} else if (oldVnode !== newVnode || parentContext) {
+				// same type and same key -&gt; update
+				newNode = updateVNode(oldVnode, newVnode, dom, parentContext)
+		}
+}
+/** 
+* 更新虚拟DOM
+* 这里的type需要注意一下，如果vnode是个html元素，例如h1，那么type就是'h1'
+** 如果vnode是一个函数组件，例如const Header = () =&gt; &lt;h1&gt;header&lt;/h1&gt;，那么type就是函数Header
+** 如果vnode是一个class组件，那么type就是那个class
+*/
+const updateVNode = (vnode, node) =&gt; {
+		const { type } = vnode; // type是指虚拟DOM的类型
+		// 如果是class组件
+		if (type === VCOMPONENT) {
+				return updateComponent(vnode, node)
+		} else (type === VSTATELESS){
+				return updateStateLess(vnode, node)
+		}
+		updateVChildren(vnode, node)
+}
+// 更新class组件（调用render方法拿到新的虚拟DOM）
+const updateComponent = (vnode, node) =&gt; {
+		const { type: Component } = vnode; // type是指虚拟DOM的类型
+		const newVNode = new Component().render();
+		compareTwoVnodes(newVNode, vnode, node);
+}
+// 更新无状态组件（直接执行函数拿到新的虚拟DOM）
+const updateStateLess = (vnode, node) =&gt; {
+		const { type: Component } = vnode; // type是指虚拟DOM的类型
+		const newVNode = Component();
+		compareTwoVnodes(newVNode, vnode, node);
+}
+const updateVChildren = (vnode, node) =&gt; {
+		for (let i = 0; i &lt; node.children.length; i++) {
+				updateVNode(vnode.children[i], node.children[i])
+		}
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="element-diff">element diff</h3>
+<p>当节点处于同一层级时，React diff 提供了三种节点操作</p>
+<pre><code class="language-js">// oldDoms是真实DOM，newDoms是最新的虚拟DOM
+const oldDoms = [A, B, C, D],
+	newDoms = [B, A, E, D],
+	updates = [],
+	removes = [],
+	creates = [];
+// 进行两层遍历，获取到哪些节点需要更新，哪些节点需要移除。
+for (let i = 0; i &lt; oldDoms.length; i++) {
+	const oldDom = oldDoms[i]
+	let shouldRemove = true
+	for (let j = 0; j &lt; newDoms.length; j++) {
+		const newDom = newDoms[j];
+		if (
+				oldDom.key === newDom.key &amp;&amp;
+				oldDom.type === newDom.type
+		) {
+				updates[j] = {
+						index: j,
+						node: oldDom,
+						parentNode: parentNode // 这里真实DOM的父节点
+				}
+				shouldRemove = false
+		}
+	}
+	if (shouldRemove) {
+			removes.push({
+					node: oldDom
+			})
+	}
+}
+// 从虚拟DOM节点来取出不要更新的节点，这就是需要新创建的节点。
+for (let j = 0; j &lt; newDoms.length; j++) {
+	if (!updates[j]) {
+			creates.push({
+					index: j,
+					vnode: newDoms[j],
+					parentNode: parentNode // 这里真实DOM的父节点
+			})
+	}
+}
+</code></pre>
+<ul>
+<li>
+<p>插入</p>
+<pre><code class="language-js">const create = (creates) =&gt; {
+		creates.forEach(create =&gt; {
+				const index = create.index,
+						parentNode = create.parentNode,
+						vnode = create.vnode,
+						curNode = parentNode.children[index],
+						node = createNode(vnode); // 创建DOM节点
+				parentNode.insertBefore(node, curNode)
+		})
+}
+</code></pre>
+</li>
+<li>
+<p>移动</p>
+<pre><code class="language-js">const update = (updates) =&gt; {
+		updates.forEach(update =&gt; {
+				const index = update.index,
+						parentNode = update.parentNode,
+						node = update.node,
+						curNode = parentNode.children[index];
+				if (curNode !== node) {
+						parentNode.insertBefore(node, curNode)
+				}
+		})
+}
+</code></pre>
+</li>
+<li>
+<p>删除</p>
+<pre><code class="language-js">const remove = (removes) =&gt; {
+		removes.forEach(remove =&gt; {
+				const node = remove.node
+				node.parentNode.removeChild(node)
+		})
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="后续">后续</h3>
+<ul>
+<li>
+<p>看到这里，我们首先能引出一个思考🤔，那就是 vue 与 React diff 算法的不同</p>
+</li>
+<li>
+<p>其次，我们想这么一种场景🎬，因为 React setState 会更新其组件以及它的所有子组件，这些组件会全部进行 diff 算法对比，那么在存在大量子组件的情况下，这种算法无疑是十分耗费性能的，所以，这也就是 React 团队会耗时两年的时间，将 fiber 引入 React 的原因。</p>
+</li>
+</ul>
+<h3 id="参考资料">参考资料</h3>
+<p><a href="https://zhuanlan.zhihu.com/p/63964441">react diff简单实现</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/36798520">[译] React性能优化：Virtual Dom原理浅析</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/20346379">React 源码剖析系列 － 不可思议的 react diff</a></p>
+<p><a href="https://zh-hans.reactjs.org/docs/reconciliation.html">协调</a></p>
+<p><a href="https://segmentfault.com/a/1190000010686582">React源码之Diff算法</a></p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/vue-diff-essay">
+              <h3 class="post-title">
+                下一篇：Vue diff Essay
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  Powered by Hve Notes
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
