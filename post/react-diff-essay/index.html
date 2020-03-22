@@ -298,8 +298,8 @@ for (let j = 0; j &lt; newDoms.length; j++) {
 <li>
 <p>看到这里，我们首先能引出一个思考🤔，那就是 vue 与 React diff 算法的不同</p>
 <ul>
-<li>react 有 compnent diff，而 vue 没有</li>
-</ul>
+<li>
+<p>react 有 compnent diff，而 vue 没有</p>
 <blockquote>
 <p>在 React 应用中，当某个组件的状态发生变化时，它会以该组件为根，重新渲染整个组件子树。</p>
 <p>如要避免不必要的子组件的重渲染，你需要在所有可能的地方使用 PureComponent，或是手动实现 shouldComponentUpdate 方法。同时你可能会需要使用不可变的数据结构来使得你的组件更容易被优化。</p>
@@ -308,8 +308,10 @@ for (let j = 0; j &lt; newDoms.length; j++) {
 <p>Vue 的这个特点使得开发者不再需要考虑此类优化，从而能够更好地专注于应用本身。</p>
 </blockquote>
 <p>所以说，React 之所以会有 component 的比较，而 vue 在虚拟DOM 为 component 时会跳过 diff ，就是这个原因</p>
-<ul>
-<li>剩下的 tree diff 与 element diff 两者都有，虽然具体实现不同，但都是有的</li>
+</li>
+<li>
+<p>剩下的 tree diff 与 element diff 两者都有，虽然具体实现不同，但都是有的</p>
+</li>
 </ul>
 </li>
 <li>
