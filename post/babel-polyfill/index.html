@@ -80,6 +80,16 @@
           <div class="post-info post-detail-info">
             <span><i class="icon-calendar-outline"></i> 2019-07-17</span>
             
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://sfmonkey.github.io//tag/PcrNP95Kt">
+                    Babel
+                    
+                  </a>
+                
+              </span>
+            
           </div>
           <div class="post-content">
             <p>在前端代码构建中，我们使用 babel 将 ES2015 + 的代码转换为低版本的代码，来保证各个浏览器端的正常运行。但是在没有任何插件的情况下，babel 只会帮我们转换语法，不会转换类和方法。</p>
@@ -117,13 +127,15 @@
 <p>但问题也有，<strong>@babel/plugin-transform-runtime 不会转换实例方法</strong>，因为如果转换实例方法，势必要修改原型链，这和不污染全局的初衷相悖。而且在我个人看来，<strong>根据 preset 来判断，也没有 bowerlists 那么精确</strong>。</p>
 <h3 id="polyfillio">polyfill.io</h3>
 <p>以上的方案其实都有牺牲使用最新浏览器的用户的体验，而 polyfill.io 只需引入一个文件，就会根据当前浏览器来加载需要的 polyfill 文件，<strong>但是考虑到面对国内浏览器各种奇葩的 UA，会有一些风险存在</strong>。</p>
-<p>参考资料：
-<a href="https://github.com/SunshowerC/blog/issues/4">@babel/polyfill 与 @babel/plugin-transform-runtime 详解</a>
-<a href="https://juejin.im/post/5c09d6d35188256d9832df9d">babel能不能分析代码然后按需polyfill ？</a>
-<a href="https://segmentfault.com/a/1190000010106158">21 分钟精通前端Polyfill方案</a>
-<a href="https://juejin.im/entry/5b108f4c6fb9a01e5868ba3d">babel-runtime使用与性能优化</a>
-<a href="https://babeljs.io/docs/en/babel-plugin-transform-runtime#technical-details">@babel/plugin-transform-runtime</a>
-<a href="https://juejin.im/entry/5a290988f265da43062aa986">ES6和Babel你不知道的事儿</a></p>
+<h3 id="参考资料">参考资料：</h3>
+<ul>
+<li><a href="https://github.com/SunshowerC/blog/issues/4">@babel/polyfill 与 @babel/plugin-transform-runtime 详解</a></li>
+<li><a href="https://juejin.im/post/5c09d6d35188256d9832df9d">babel能不能分析代码然后按需polyfill ？</a></li>
+<li><a href="https://segmentfault.com/a/1190000010106158">21 分钟精通前端Polyfill方案</a></li>
+<li><a href="https://juejin.im/entry/5b108f4c6fb9a01e5868ba3d">babel-runtime使用与性能优化</a></li>
+<li><a href="https://babeljs.io/docs/en/babel-plugin-transform-runtime#technical-details">@babel/plugin-transform-runtime</a></li>
+<li><a href="https://juejin.im/entry/5a290988f265da43062aa986">ES6和Babel你不知道的事儿</a></li>
+</ul>
 
           </div>
         </div>
