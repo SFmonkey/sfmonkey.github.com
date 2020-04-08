@@ -78,7 +78,7 @@
         <div class="post-detail">
           <h2 class="post-title">手写一个 promise</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> Invalid date</span>
+            <span><i class="icon-calendar-outline"></i> 2019-01-25</span>
             
               <span>
                 <i class="icon-pricetags-outline"></i>
@@ -150,7 +150,7 @@
                            
                     try {
                         let x = onFulfilled(_this.value);
-                        resolvePromise(promise2, x, resolve, reject);
+                        resolve(x);
                     } catch (e) {
                         reject(e);
                     }
@@ -159,7 +159,7 @@
 
                     try {
                         let x = onRejected(_this.reason);
-                        resolvePromise(promise2, x, resolve, reject);
+                        resolve(x);
                     } catch (e) {
                         reject(e);
                     }
@@ -172,7 +172,7 @@
             let x = onFulfilled(_this.value);
             promise2 = new promise (function(resolve, reject) {
                 try {
-                    resolvePromise(promise2, x, resolve, reject);
+                    resolve(x);
                 } catch (e) {
                     reject(e);
                 }
@@ -184,7 +184,7 @@
             let x = onRejected(_this.reason);
             promise2 = new promise (function(resolve, reject) {
                 try {
-                    resolvePromise(promise2, x, resolve, reject);
+                    resolve(x);
                 } catch (e) {
                     reject(e);
                 }
@@ -192,13 +192,6 @@
         }
 
         return promise2;
-    }
-
-    function resolvePromise(promise2, x, resolve, reject) {
-
-        if (promise2 === x) {
-            return reject(new TypeError('循环引用了'));
-        }
     }
 
     Promise.prototype.resolve = function (value) {
@@ -229,7 +222,7 @@
 
             function processData(index, y) {
                 arr[index] = y;
-                if (++i === promises.length) {
+                if (++index === promises.length) {
                     resolve(arr);
                 }
             }
@@ -244,15 +237,17 @@
 
     module.exports = Promise
 </code></pre>
+<h3 id="参考资料">参考资料</h3>
+<p><a href="https://juejin.im/post/5dc383bdf265da4d2d1f6b23">可能是目前最易理解的手写promise</a></p>
 
           </div>
         </div>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://sfmonkey.github.io//post/2019-1-29-bfs-dfs">
+            <a class="purple-link" href="https://sfmonkey.github.io//post/2018-11-10-csrf">
               <h3 class="post-title">
-                下一篇：深度优先遍历和广度优先遍历
+                下一篇：前端安全（二）CSRF 防御
               </h3>
             </a>
           </div>
